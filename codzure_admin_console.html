@@ -4,25 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Codzure Admin Console</title>
+  <link rel="icon" href="data:," />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #07111b;
-      --panel: #0f1a24;
-      --panel-2: #132231;
-      --line: rgba(255,255,255,0.09);
-      --text: #f4f8fc;
-      --muted: #9fb0c2;
-      --sky: #39B6FF;
-      --sky-soft: rgba(57,182,255,0.12);
+      --bg: #081018;
+      --panel: #101720;
+      --panel-2: #0d141b;
+      --line: rgba(255,255,255,0.08);
+      --text: #edf2f7;
+      --muted: #92a0af;
+      --sky: #5da8ff;
+      --sky-soft: rgba(93,168,255,0.10);
       --danger: #ff6b6b;
       --success: #3ddc97;
       --warning: #ffd166;
-      --radius: 22px;
+      --radius: 16px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
     body {
       background: var(--bg);
       color: var(--text);
@@ -40,33 +41,17 @@
     }
 
     body::before {
-      background:
-        radial-gradient(circle at 18% 22%, rgba(57,182,255,0.26), transparent 28%),
-        radial-gradient(circle at 82% 18%, rgba(123,215,255,0.18), transparent 25%),
-        radial-gradient(circle at 50% 88%, rgba(57,182,255,0.16), transparent 30%),
-        linear-gradient(135deg, #050a10, #07111b 46%, #0f1a24);
-      animation: bgFloat 16s ease-in-out infinite alternate;
+      background: linear-gradient(180deg, #081018 0%, #0a1118 100%);
     }
 
     body::after {
       z-index: -1;
-      opacity: 0.34;
+      opacity: 0.16;
       background-image:
-        linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
-      background-size: 58px 58px;
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 72px 72px;
       mask-image: radial-gradient(circle at center, black, transparent 72%);
-      animation: gridDrift 22s linear infinite;
-    }
-
-    @keyframes bgFloat {
-      0% { transform: translate3d(-1.5%, -1%, 0) scale(1); filter: hue-rotate(0deg); }
-      100% { transform: translate3d(1.5%, 1%, 0) scale(1.04); filter: hue-rotate(10deg); }
-    }
-
-    @keyframes gridDrift {
-      0% { transform: translate3d(0, 0, 0); }
-      100% { transform: translate3d(58px, 58px, 0); }
     }
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
@@ -80,27 +65,8 @@
       position: relative;
       overflow: hidden;
       background:
-        linear-gradient(135deg, rgba(5,10,16,0.78), rgba(7,17,27,0.72)),
+        linear-gradient(135deg, rgba(8,16,24,0.84), rgba(10,17,24,0.76)),
         url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat;
-    }
-
-    .auth-screen::before {
-      content: '';
-      position: absolute;
-      width: 520px;
-      height: 520px;
-      border-radius: 50%;
-      background: rgba(57,182,255,0.16);
-      filter: blur(24px);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      animation: orbPulse 6s ease-in-out infinite alternate;
-    }
-
-    @keyframes orbPulse {
-      from { transform: translate(-50%, -50%) scale(0.94); opacity: 0.45; }
-      to { transform: translate(-50%, -50%) scale(1.08); opacity: 0.78; }
     }
 
     .auth-layout {
@@ -126,15 +92,15 @@
 
     .auth-card {
       width: min(440px, 100%);
-      background: rgba(15, 26, 36, 0.9);
+      background: rgba(16, 23, 32, 0.93);
       border: 1px solid rgba(255,255,255,0.11);
-      border-radius: 28px;
+      border-radius: 22px;
       padding: 38px;
       min-height: auto;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      box-shadow: 0 24px 70px rgba(0,0,0,0.34);
+      box-shadow: 0 18px 48px rgba(0,0,0,0.28);
       backdrop-filter: blur(18px);
       position: relative;
       z-index: 2;
@@ -221,6 +187,8 @@
     .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(57,182,255,0.28); }
     .btn.secondary { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--line); }
     .btn.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); }
+    .btn.success { background: var(--success); color: #062013; }
+    .btn.danger { background: rgba(255,107,107,0.12); color: #ff9b9b; border: 1px solid rgba(255,107,107,0.22); }
     .btn.small { padding: 8px 12px; font-size: 0.78rem; }
 
     .message { margin-top: 14px; font-size: 0.86rem; color: var(--muted); }
@@ -228,96 +196,214 @@
     .message.success { color: var(--success); }
 
     .app { display: none; min-height: 100vh; }
-    .shell { display: grid; grid-template-columns: 290px 1fr; min-height: 100vh; }
+    .shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
 
     aside {
       border-right: 1px solid var(--line);
       background: rgba(7,17,27,0.82);
       backdrop-filter: blur(16px);
-      padding: 22px;
+      padding: 18px;
       position: sticky;
       top: 0;
       height: 100vh;
       overflow-y: auto;
     }
 
-    .sidebar-logo { margin-bottom: 28px; }
-    .sidebar-logo h2 { font-size: 1.18rem; letter-spacing: -0.04em; }
+    .sidebar-logo { margin-bottom: 20px; }
+    .sidebar-logo h2 { font-size: 1.05rem; letter-spacing: -0.04em; }
     .sidebar-logo p { color: var(--muted); font-size: 0.76rem; margin-top: 4px; }
 
-    .nav-section-title { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; margin: 22px 0 10px; }
+    .nav-section-title { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; margin: 18px 0 8px; }
     .nav-item {
       display: flex;
       align-items: center;
       gap: 12px;
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 16px;
+      padding: 10px 12px;
+      border-radius: 10px;
       border: 1px solid transparent;
       color: var(--muted);
       background: transparent;
       text-align: left;
       margin-bottom: 8px;
     }
-    .nav-item.active, .nav-item:hover { background: var(--sky-soft); color: var(--text); border-color: rgba(57,182,255,0.18); }
+    .nav-item.active, .nav-item:hover { background: rgba(93,168,255,0.08); color: var(--text); border-color: rgba(93,168,255,0.16); }
     .nav-item .status { margin-left: auto; font-size: 0.68rem; padding: 4px 8px; border-radius: 999px; background: rgba(255,255,255,0.06); color: var(--muted); }
     .nav-item.active .status { color: var(--sky); }
 
-    main { padding: 26px; overflow: hidden; }
-    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 24px; }
-    .topbar h1 { font-size: clamp(1.45rem, 2.5vw, 2.15rem); letter-spacing: -0.05em; }
+    main { padding: 18px; overflow: hidden; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .topbar h1 { font-size: clamp(1.2rem, 2vw, 1.65rem); letter-spacing: -0.05em; }
     .topbar p { color: var(--muted); margin-top: 4px; }
     .topbar-actions { display: flex; gap: 10px; align-items: center; }
 
-    .grid { display: grid; gap: 18px; }
+    .grid { display: grid; gap: 12px; }
     .grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
     .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
     .card {
-      background: rgba(15,26,36,0.84);
+      background: rgba(16,23,32,0.82);
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: 0 18px 55px rgba(0,0,0,0.18);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
     }
-    .card h3 { font-size: 1rem; margin-bottom: 8px; }
-    .card .muted { color: var(--muted); font-size: 0.85rem; }
-    .metric { font-size: 2rem; font-weight: 700; letter-spacing: -0.06em; margin-top: 8px; }
-    .metric-label { color: var(--muted); font-size: 0.8rem; }
+    .card h3 { font-size: 0.88rem; margin-bottom: 6px; letter-spacing: -0.02em; }
+    .card .muted { color: var(--muted); font-size: 0.8rem; }
+    .metric { font-size: 1.45rem; font-weight: 700; letter-spacing: -0.05em; margin-top: 6px; }
+    .metric-label { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; }
 
-    .chart-wrap { display: grid; gap: 14px; margin-top: 16px; }
-    .chart-row { display: grid; grid-template-columns: 110px 1fr 44px; gap: 12px; align-items: center; }
-    .chart-label { color: var(--muted); font-size: 0.82rem; font-weight: 600; }
-    .chart-track { height: 14px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; border: 1px solid var(--line); }
+    .panel-hero {
+      padding: 0 0 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .panel-hero-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+    }
+    .panel-hero .eyebrow {
+      display: inline-flex;
+      color: var(--muted);
+      font-size: 0.66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+    }
+    .panel-hero h2 {
+      font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      margin-bottom: 6px;
+    }
+    .panel-hero p {
+      color: var(--muted);
+      max-width: 56ch;
+      font-size: 0.8rem;
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .data-chip {
+      min-width: 128px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+    }
+    .data-chip .label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.64rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .data-chip .value {
+      display: block;
+      margin-top: 6px;
+      color: var(--text);
+      font-size: 0.94rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    .data-chip .sub {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    .chart-wrap { display: grid; gap: 10px; margin-top: 12px; }
+    .chart-row { display: grid; grid-template-columns: 92px 1fr 36px; gap: 10px; align-items: center; }
+    .chart-label { color: var(--muted); font-size: 0.74rem; font-weight: 600; }
+    .chart-track { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; border: 1px solid var(--line); }
     .chart-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--sky), #7bd7ff); transition: width 0.65s cubic-bezier(0.16, 1, 0.3, 1); }
-    .chart-value { color: var(--text); font-size: 0.82rem; font-weight: 700; text-align: right; }
-    .chart-empty { color: var(--muted); font-size: 0.86rem; padding: 16px 0; }
-    .chart-summary { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .chart-value { color: var(--text); font-size: 0.74rem; font-weight: 700; text-align: right; }
+    .chart-empty { color: var(--muted); font-size: 0.8rem; padding: 12px 0; }
+    .chart-summary { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .chart-summary .pill { text-transform: capitalize; }
+
+    .review-queue, .directory-list { display: grid; gap: 10px; }
+    .review-item {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+      display: grid;
+      gap: 10px;
+    }
+    .review-item-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .review-item-head h4, .directory-item h4 { font-size: 0.86rem; letter-spacing: -0.02em; }
+    .review-meta, .directory-meta { color: var(--muted); font-size: 0.74rem; line-height: 1.4; }
+    .review-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .review-actions .btn {
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 0.72rem;
+    }
+    .review-note {
+      min-height: 72px;
+      background: #0a141e;
+    }
+    .directory-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .directory-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .directory-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      align-items: center;
+    }
 
     .panel { display: none; }
     .panel.active { display: block; }
 
-    .table-wrap { overflow-x: auto; border-radius: 18px; border: 1px solid var(--line); }
+    .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--line); }
     table { width: 100%; border-collapse: collapse; min-width: 860px; background: rgba(11,21,32,0.5); }
-    th, td { padding: 13px 14px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
-    th { color: var(--muted); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(255,255,255,0.03); }
-    td { font-size: 0.86rem; color: #dce7f2; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; background: rgba(255,255,255,0.03); }
+    td { font-size: 0.8rem; color: #dce7f2; }
     tr:hover td { background: rgba(57,182,255,0.04); }
 
-    .pill { display: inline-flex; padding: 5px 9px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; background: rgba(255,255,255,0.07); color: var(--muted); }
+    .pill { display: inline-flex; padding: 4px 8px; border-radius: 999px; font-size: 0.66rem; font-weight: 700; background: rgba(255,255,255,0.05); color: var(--muted); }
     .pill.new { color: var(--sky); background: rgba(57,182,255,0.12); }
     .pill.converted { color: var(--success); background: rgba(61,220,151,0.12); }
     .pill.quoted { color: var(--warning); background: rgba(255,209,102,0.12); }
+    .pill.pending { color: var(--warning); background: rgba(255,209,102,0.12); }
+    .pill.approved { color: var(--success); background: rgba(61,220,151,0.12); }
+    .pill.declined { color: var(--danger); background: rgba(255,107,107,0.12); }
 
-    .settings-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .settings-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
     .settings-form .full { grid-column: 1 / -1; }
 
-    .empty-state { text-align: center; padding: 80px 20px; }
-    .empty-icon { font-size: 3rem; margin-bottom: 16px; }
-    .empty-state h2 { font-size: 1.6rem; letter-spacing: -0.04em; }
-    .empty-state p { color: var(--muted); max-width: 560px; margin: 10px auto 0; }
+    .empty-state { text-align: center; padding: 28px 16px; }
+    .empty-icon { font-size: 2rem; margin-bottom: 10px; }
+    .empty-state h2 { font-size: 0.95rem; letter-spacing: -0.03em; }
+    .empty-state p { color: var(--muted); max-width: 440px; margin: 8px auto 0; font-size: 0.78rem; }
 
     .loading-overlay {
       position: fixed;
@@ -368,7 +454,7 @@
         <div class="brand-mark"></div>
         <div>
           <h1>Codzure Admin Console</h1>
-          <p>Dashboard + website data</p>
+          <p>Admin console</p>
         </div>
       </div>
       <form id="loginForm">
@@ -381,14 +467,14 @@
           <input type="password" id="password" placeholder="Your password" required>
         </div>
         <button class="btn" type="submit" style="width:100%;">Sign in</button>
-        <p class="message" id="loginMessage">Use your Codzure admin credentials to continue.</p>
+        <p class="message" id="loginMessage">Sign in with admin access.</p>
       </form>
       </div>
       <div class="auth-visual" aria-hidden="true">
         <div class="auth-visual-content">
           <span class="eyebrow">Codzure Control Center</span>
-          <h2>Manage leads, settings and product panels from one place.</h2>
-          <p>Track website enquiries, update contact details and prepare NeoBudget and Neo AutoPulse from a clean internal console.</p>
+          <h2>Leads, settings, modules.</h2>
+          <p>One compact place for the website, NeoBudget and GariPulse.</p>
         </div>
       </div>
     </div>
@@ -399,13 +485,16 @@
       <aside>
         <div class="sidebar-logo">
           <h2>Codzure Admin</h2>
-          <p>Multi-panel console</p>
+          <p>Compact console</p>
         </div>
         <button class="nav-item active" data-panel="dashboard">📊 Dashboard</button>
         <div class="nav-section-title">Products</div>
         <button class="nav-item" data-panel="website">🌐 Codzure Website <span class="status">active</span></button>
-        <button class="nav-item" data-panel="neobudget">💰 NeoBudget <span class="status">empty</span></button>
-        <button class="nav-item" data-panel="autopulse">🚗 Neo AutoPulse <span class="status">empty</span></button>
+        <button class="nav-item" data-panel="neobudget">💰 NeoBudget <span class="status">live</span></button>
+        <button class="nav-item" data-panel="neobudget-details">📈 NeoBudget details <span class="status">more</span></button>
+        <button class="nav-item" data-panel="garipulse">🚗 GariPulse <span class="status">live</span></button>
+        <div class="nav-section-title">Operations</div>
+        <button class="nav-item" data-panel="settings">⚙ Website settings</button>
         <div class="nav-section-title">Account</div>
         <button class="nav-item" id="refreshBtn">↻ Refresh data</button>
         <button class="nav-item" id="logoutBtn">↪ Sign out</button>
@@ -415,7 +504,7 @@
         <div class="topbar">
           <div>
             <h1 id="pageTitle">Dashboard</h1>
-            <p id="pageSubtitle">Overview of Codzure Website data and product panels.</p>
+            <p id="pageSubtitle">Leads, settings and modules.</p>
           </div>
           <div class="topbar-actions">
             <span class="pill" id="userEmail">Signed in</span>
@@ -427,33 +516,38 @@
           <div class="grid cols-4" id="metricCards"></div>
           <div class="grid cols-2" style="margin-top:18px;">
             <div class="card">
-              <h3>Product panels</h3>
-              <p class="muted">Codzure Website is active. NeoBudget and Neo AutoPulse are placeholders for now.</p>
+              <h3>Modules</h3>
+              <p class="muted">Website, NeoBudget, GariPulse.</p>
               <div id="moduleCards" class="grid" style="margin-top:16px;"></div>
             </div>
             <div class="card">
-              <h3>Lead breakdown</h3>
-              <p class="muted">Website enquiries grouped by project type.</p>
+              <h3>Lead mix</h3>
+              <p class="muted">By project type.</p>
               <div id="leadBreakdown" style="margin-top:16px;"></div>
             </div>
           </div>
           <div class="card" style="margin-top:18px;">
-            <h3>Recent website leads by action</h3>
-            <p class="muted">Shows the current follow-up action status for recent Codzure website leads.</p>
+            <h3>Lead actions</h3>
+            <p class="muted">Recent follow-up status.</p>
             <div id="dashboardLeadActionsChart" class="chart-wrap"></div>
+          </div>
+          <div class="card" style="margin-top:18px;">
+            <h3>Activity</h3>
+            <p class="muted">Latest changes.</p>
+            <div id="adminActivityFeed" style="margin-top:16px;"></div>
           </div>
         </section>
 
         <section class="panel" id="panel-website">
           <div class="grid cols-3" id="websiteMetricCards"></div>
           <div class="card" style="margin-top:18px;">
-            <h3>Recent website leads by action</h3>
-            <p class="muted">Track how many recent leads are new, contacted, quoted, converted, or closed.</p>
+            <h3>Lead actions</h3>
+            <p class="muted">Recent lead status.</p>
             <div id="websiteLeadActionsChart" class="chart-wrap"></div>
           </div>
           <div class="card" style="margin-top:18px;">
-            <h3>Recent website leads</h3>
-            <p class="muted">Lead submissions from the Codzure website contact form.</p>
+            <h3>Leads</h3>
+            <p class="muted">Website submissions.</p>
             <div class="table-wrap" style="margin-top:16px;">
               <table>
                 <thead>
@@ -467,9 +561,150 @@
           </div>
 
           <div class="card" style="margin-top:18px;">
-            <h3>Website contact & social settings</h3>
-            <p class="muted">These values are loaded from Supabase and used by the public Codzure website.</p>
-            <form id="settingsForm" class="settings-form" style="margin-top:16px;">
+            <h3>Operations</h3>
+            <p class="muted">Manage website contact and social links from the Operations section.</p>
+            <button class="btn secondary small" data-panel-link="settings" style="margin-top:12px;">Open Website settings</button>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-neobudget">
+          <div class="panel-hero">
+            <div class="panel-hero-head">
+              <div>
+                <span class="eyebrow">Finance</span>
+                <h2>NeoBudget overview</h2>
+                <p>Submissions, payroll and activity.</p>
+              </div>
+              <div class="topbar-actions" style="flex-wrap:wrap;justify-content:flex-end;">
+                <span class="pill converted">live</span>
+                <span class="pill" id="neobudgetLastSync">last sync --</span>
+              </div>
+            </div>
+            <div class="chip-row" id="neobudgetOverviewChips"></div>
+          </div>
+          <div class="grid cols-3" style="margin-top:18px;" id="neobudgetMetricCards"></div>
+          <div class="grid cols-2" style="margin-top:18px;">
+            <div class="card">
+              <h3>Submissions</h3>
+              <p class="muted">Latest saved periods.</p>
+              <div class="table-wrap" style="margin-top:16px;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Period</th><th>User</th><th>Gross</th><th>After tax</th><th>Final balance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="neobudgetSubmissions"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <h3>Payroll</h3>
+              <p class="muted">Current KRA rule set.</p>
+              <div id="neobudgetPayrollConfig" style="margin-top:16px;"></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:18px;">
+            <h3>More</h3>
+            <p class="muted">Health, activity and event mix sit on the details page.</p>
+            <button class="btn secondary small" data-panel-link="neobudget-details" style="margin-top:12px;">Open Details</button>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-neobudget-details">
+          <div class="panel-hero">
+            <div class="panel-hero-head">
+              <div>
+                <span class="eyebrow">Finance</span>
+                <h2>NeoBudget details</h2>
+                <p>Health, activity and event mix.</p>
+              </div>
+              <div class="topbar-actions" style="flex-wrap:wrap;justify-content:flex-end;">
+                <span class="pill converted">live</span>
+                <span class="pill" id="neobudgetDetailsSync">last sync --</span>
+              </div>
+            </div>
+          </div>
+          <div class="grid cols-2" style="margin-top:18px;">
+            <div class="card">
+              <h3>Health</h3>
+              <p class="muted">Latest signal.</p>
+              <div id="neobudgetHealth" style="margin-top:16px;"></div>
+            </div>
+            <div class="card">
+              <h3>Activity</h3>
+              <p class="muted">Recent events.</p>
+              <div id="neobudgetActivityFeed" style="margin-top:16px;"></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:18px;">
+            <h3>Event mix</h3>
+            <p class="muted">Current usage.</p>
+            <div id="neobudgetEventChart" class="chart-wrap"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-garipulse">
+          <div class="panel-hero">
+            <div class="panel-hero-head">
+              <div>
+                <span class="eyebrow">Garage</span>
+                <h2>GariPulse overview</h2>
+                <p>Review and publish garages.</p>
+              </div>
+              <div class="topbar-actions" style="flex-wrap:wrap;justify-content:flex-end;">
+                <span class="pill converted">live</span>
+                <span class="pill" id="garipulseLastSync">last sync --</span>
+              </div>
+            </div>
+            <div class="chip-row" id="garipulseOverviewChips"></div>
+          </div>
+          <div class="grid cols-3" style="margin-top:18px;" id="garipulseMetricCards"></div>
+          <div class="grid cols-2" style="margin-top:18px;">
+            <div class="card">
+              <h3>Approvals</h3>
+              <p class="muted">Pending submissions.</p>
+              <div id="garipulseSubmissions" class="review-queue" style="margin-top:16px;"></div>
+            </div>
+            <div class="card">
+              <h3>Directory</h3>
+              <p class="muted">Approved only.</p>
+              <div id="garipulsePublicDirectory" class="directory-list" style="margin-top:16px;"></div>
+            </div>
+          </div>
+          <div class="grid cols-2" style="margin-top:18px;">
+            <div class="card">
+              <h3>Network</h3>
+              <p class="muted">Current list.</p>
+              <div id="garipulseGarages" style="margin-top:16px;"></div>
+            </div>
+            <div class="card">
+              <h3>Services</h3>
+              <p class="muted">Reviews, fuel, metrics.</p>
+              <div id="garipulseServiceStats" style="margin-top:16px;"></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:18px;">
+              <h3>Notes</h3>
+            <p class="muted">Live garage data.</p>
+          </div>
+        </section>
+
+        <section class="panel" id="panel-settings">
+          <div class="panel-hero">
+            <div class="panel-hero-head">
+              <div>
+                <span class="eyebrow">Operations</span>
+                <h2>Website contact & social settings</h2>
+                <p>Public site values for phone, WhatsApp, email, location, and social links.</p>
+              </div>
+              <div class="topbar-actions" style="flex-wrap:wrap;justify-content:flex-end;">
+                <span class="pill converted">live</span>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:18px;">
+            <form id="settingsForm" class="settings-form">
               <div class="field"><label>Phone display</label><input id="settingPhone" placeholder="+254 715 227 409"></div>
               <div class="field"><label>WhatsApp number</label><input id="settingWhatsapp" placeholder="+254715227409"></div>
               <div class="field"><label>WhatsApp URL</label><input id="settingWhatsappUrl" placeholder="https://wa.me/254715227409"></div>
@@ -483,22 +718,6 @@
             </form>
           </div>
         </section>
-
-        <section class="panel" id="panel-neobudget">
-          <div class="card empty-state">
-            <div class="empty-icon">💰</div>
-            <h2>NeoBudget panel is empty for now</h2>
-            <p>This module is reserved. Later it can manage users, plans, categories, feedback and product settings.</p>
-          </div>
-        </section>
-
-        <section class="panel" id="panel-autopulse">
-          <div class="card empty-state">
-            <div class="empty-icon">🚗</div>
-            <h2>Neo AutoPulse panel is empty for now</h2>
-            <p>This module is reserved. Later it can manage vehicle data, leads, service reminders, content and product settings.</p>
-          </div>
-        </section>
       </main>
     </div>
   </section>
@@ -508,12 +727,54 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxY3BveHlhZGZzeWZrdmJneWVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NzY1MzYsImV4cCI6MjA2NjM1MjUzNn0.c8bV15lHma2TNBGzg9uzS0dcnhDojYXu7ITjm5BrfBY';
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const state = { session: null, summary: null, leads: [], modules: [], breakdown: [], settings: {} };
+    const state = { session: null, summary: null, leads: [], modules: [], adminOverview: [], adminActivity: [], breakdown: [], settings: {}, neobudget: null, garipulse: null };
     const $ = (id) => document.getElementById(id);
 
     function showLoading(show) { $('loadingOverlay').style.display = show ? 'flex' : 'none'; }
     function formatDate(value) { return value ? new Date(value).toLocaleString() : '—'; }
+    function formatMoney(value) {
+      if (value === null || value === undefined || value === '') return '—';
+      const number = typeof value === 'number' ? value : Number(value);
+      if (Number.isNaN(number)) return String(value);
+      return `KES ${new Intl.NumberFormat('en-KE', { maximumFractionDigits: 0 }).format(number)}`;
+    }
     function statusClass(status) { return ['new','quoted','converted'].includes(status) ? status : ''; }
+    function reviewPillClass(status) {
+      return status === 'approved' ? 'approved' : status === 'declined' ? 'declined' : 'pending';
+    }
+    function humanizeLabel(value) {
+      return String(value || '')
+        .replaceAll('_', ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/\b\w/g, char => char.toUpperCase());
+    }
+    function moduleIcon(icon) {
+      const icons = {
+        website: '🌐',
+        budget: '💰',
+        auto: '🚗',
+        garage: '🚗',
+        activity: '🕘'
+      };
+      return icons[icon] || '•';
+    }
+    function jsonMetricSummary(metrics) {
+      if (!metrics || typeof metrics !== 'object' || Array.isArray(metrics)) return [];
+      return Object.entries(metrics)
+        .filter(([key]) => key !== 'message')
+        .slice(0, 3)
+        .map(([key, value]) => [humanizeLabel(key), value]);
+    }
+    function emptyState(title, copy) {
+      return `
+        <div class="empty-state" style="padding:24px 16px;border:1px dashed var(--line);border-radius:14px;background:rgba(255,255,255,0.02);">
+          <div class="empty-icon" style="font-size:2rem;margin-bottom:10px;">○</div>
+          <h2 style="font-size:1rem;margin-bottom:6px;">${title}</h2>
+          <p class="muted" style="margin:0;">${copy}</p>
+        </div>
+      `;
+    }
 
     function setPanel(panel) {
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -521,10 +782,12 @@
       $(`panel-${panel}`).classList.add('active');
       document.querySelector(`[data-panel="${panel}"]`)?.classList.add('active');
       const titles = {
-        dashboard: ['Dashboard', 'Overview of Codzure Website data and product panels.'],
-        website: ['Codzure Website', 'Leads, contact settings and website data from Supabase.'],
-        neobudget: ['NeoBudget', 'Empty placeholder module for now.'],
-        autopulse: ['Neo AutoPulse', 'Empty placeholder module for now.']
+        dashboard: ['Dashboard', 'Leads, settings and modules.'],
+        website: ['Codzure Website', 'Leads and website activity.'],
+        neobudget: ['NeoBudget', 'Budget submissions and payroll.'],
+        'neobudget-details': ['NeoBudget details', 'Health, activity and event mix.'],
+        garipulse: ['Garage', 'Approvals and directory.'],
+        settings: ['Website settings', 'Contact and social links.']
       };
       $('pageTitle').textContent = titles[panel][0];
       $('pageSubtitle').textContent = titles[panel][1];
@@ -547,13 +810,477 @@
     }
 
     function renderModules() {
-      $('moduleCards').innerHTML = state.modules.map(m => `
-        <div class="card" style="padding:16px;">
-          <strong>${m.icon || '•'} ${m.name}</strong>
-          <p class="muted" style="margin-top:5px;">${m.description || ''}</p>
-          <span class="pill" style="margin-top:10px;">${m.status}</span>
+      const overviewBySlug = Object.fromEntries((state.adminOverview || []).map(row => [row.slug, row]));
+      $('moduleCards').innerHTML = state.modules.map(m => {
+        const overview = overviewBySlug[m.slug] || {};
+        const metrics = overview.metrics || {};
+        const metricPairs = jsonMetricSummary(metrics);
+        const liveSummary = m.slug === 'neobudget' ? [
+          ['submissions', state.neobudget?.overview?.total_submissions || 0],
+          ['recent', state.neobudget?.overview?.submissions_last_7_days || 0],
+          ['healthy', state.neobudget?.healthOverview?.negative_balance_submissions ? `${state.neobudget.healthOverview.negative_balance_submissions} negative` : 'healthy']
+        ] : m.slug === 'garipulse' ? [
+          ['approved', state.garipulse?.garages?.filter(garage => garage.status === 'approved' || garage.verified).length || 0],
+          ['pending', state.garipulse?.submissions?.filter(row => (row.status || 'pending') === 'pending').length || 0],
+          ['public', state.garipulse?.publicDirectory?.length || 0]
+        ] : metricPairs;
+        const description = overview.description || m.description || '';
+        const metricNote = metrics.message || '';
+
+        return `
+          <div class="card" style="padding:14px;">
+            <strong>${moduleIcon(m.icon)} ${overview.name || m.name}</strong>
+            <p class="muted" style="margin-top:5px;">${description}</p>
+            <div class="chip-row" style="margin-top:12px;">
+              ${liveSummary.slice(0, 2).map(([label, value]) => `
+                <div class="pill">${humanizeLabel(label)}: ${value}</div>
+              `).join('')}
+            </div>
+            ${metricNote ? `<p class="muted" style="margin-top:8px;">${metricNote}</p>` : ''}
+            <span class="pill" style="margin-top:10px;">${overview.status || m.status || 'active'}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAdminActivity() {
+      const feed = state.adminActivity || [];
+      const target = $('adminActivityFeed');
+      if (!target) return;
+
+      if (!feed.length) {
+        target.innerHTML = emptyState('No activity yet', 'Updates will show here.');
+        return;
+      }
+
+      target.innerHTML = feed.slice(0, 6).map(row => `
+        <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+          <div>
+            <strong>${humanizeLabel(row.action || 'activity')}</strong>
+            <div class="muted">${humanizeLabel(row.module_slug || 'unknown module')} · ${row.actor_email || '—'}</div>
+            <div class="muted">${row.summary || ''}</div>
+          </div>
+          <span class="muted">${formatDate(row.created_at)}</span>
         </div>
       `).join('');
+    }
+
+    function renderNeobudgetMetrics() {
+      const overview = state.neobudget?.overview || {};
+      const submissions = state.neobudget?.recentSubmissions || [];
+      const activity = state.neobudget?.activityEvents || [];
+      const analytics = state.neobudget?.analyticsSummary || {};
+      const payroll = state.neobudget?.payrollOverview || null;
+      const health = state.neobudget?.healthOverview || null;
+      const recentEvents = state.neobudget?.recentEvents || [];
+      const latest = submissions[0] || null;
+      const latestAt = overview.latest_submission_at || health?.latest_submission_at || latest?.created_at || null;
+
+      $('neobudgetLastSync').textContent = latestAt ? `last sync ${formatDate(latestAt)}` : 'last sync --';
+      if ($('neobudgetDetailsSync')) {
+        $('neobudgetDetailsSync').textContent = latestAt ? `last sync ${formatDate(latestAt)}` : 'last sync --';
+      }
+      $('neobudgetOverviewChips').innerHTML = [
+        ['Total submissions', overview.total_submissions || 0, 'All saved runs'],
+        ['This week', overview.submissions_last_7_days || 0, 'Recent saves'],
+        ['Average gross', formatMoney(overview.average_gross), 'Across submissions'],
+        ['Average final', formatMoney(overview.average_final_balance), 'Balance after debt'],
+        ['Health', health?.negative_balance_submissions ? `${health.negative_balance_submissions} negative` : 'healthy', 'Submission watch']
+      ].map(([label, value, sub]) => `
+        <div class="data-chip">
+          <span class="label">${label}</span>
+          <span class="value">${value}</span>
+          <span class="sub">${sub}</span>
+        </div>
+      `).join('');
+
+      $('neobudgetMetricCards').innerHTML = [
+        ['Total submissions', overview.total_submissions || 0, 'Saved budget histories'],
+        ['Recent runs', overview.submissions_last_7_days || 0, 'Last 7 days'],
+        ['Average gross', formatMoney(overview.average_gross), 'Typical gross pay']
+      ].map(([label, value, sub]) => `
+        <div class="card">
+          <div class="metric-label">${label}</div>
+          <div class="metric">${value}</div>
+          <div class="muted">${sub}</div>
+        </div>
+      `).join('');
+
+      $('neobudgetSubmissions').innerHTML = submissions.length ? submissions.slice(0, 5).map(row => `
+        <tr>
+          <td><strong>${row.period_label || '—'}</strong><br><span class="muted">${formatDate(row.saved_at || row.created_at)}</span></td>
+          <td>${row.app_user_name || row.app_user_email || '—'}</td>
+          <td>${formatMoney(row.gross)}</td>
+          <td>${formatMoney(row.net_after_tax)}</td>
+          <td><strong>${formatMoney(row.final_balance)}</strong></td>
+        </tr>
+      `).join('') : '<tr><td colspan="5">No budget submissions yet.</td></tr>';
+
+      if (payroll) {
+        $('neobudgetPayrollConfig').innerHTML = `
+          <div style="display:grid;gap:12px;">
+            <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+              <span>Config</span>
+              <strong>${payroll.name || payroll.slug || 'Active config'}</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+              <span>Basis</span>
+              <strong>${payroll.basis_label || '—'}</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+              <span>Jurisdiction</span>
+              <strong>${payroll.jurisdiction || '—'}</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+              <span>Currency</span>
+              <strong>${payroll.currency || '—'}</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+              <span>Effective from</span>
+              <strong>${payroll.effective_from || '—'}</strong>
+            </div>
+            <div class="muted" style="padding-top:6px;">${payroll.footer_note || ''}</div>
+          </div>
+        `;
+      } else {
+        $('neobudgetPayrollConfig').innerHTML = '<p class="muted">No payroll config loaded yet.</p>';
+      }
+
+      $('neobudgetHealth').innerHTML = health ? `
+        <div style="display:grid;gap:12px;">
+          <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;"><span>Stale after</span><strong>${health.stale_submission_days || '—'} days</strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;"><span>Low submission warning</span><strong>${health.low_submission_warning_count || '—'}</strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;"><span>Negative balances</span><strong>${health.negative_balance_submissions || 0}</strong></div>
+          <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;"><span>Latest submission</span><strong>${health.latest_submission_at ? formatDate(health.latest_submission_at) : '—'}</strong></div>
+        </div>
+      ` : '<p class="muted">No submission health overview loaded yet.</p>';
+
+      const activityCounts = Object.fromEntries(['page_viewed', 'summary_shared', 'summary_share_failed'].map(key => [key, 0]));
+      activity.forEach(event => {
+        if (activityCounts[event.event_name] !== undefined) activityCounts[event.event_name] += 1;
+      });
+      const max = Math.max(...Object.values(activityCounts), 1);
+      $('neobudgetEventChart').innerHTML = Object.values(activityCounts).every(value => value === 0)
+        ? '<p class="chart-empty">No activity signal yet.</p>'
+        : Object.entries(activityCounts).map(([label, value]) => `
+          <div class="chart-row">
+            <div class="chart-label">${label.replaceAll('_', ' ')}</div>
+            <div class="chart-track"><div class="chart-fill" style="width:${Math.round((value / max) * 100)}%"></div></div>
+            <div class="chart-value">${value}</div>
+          </div>
+        `).join('');
+
+      $('neobudgetActivityFeed').innerHTML = recentEvents.length ? recentEvents.slice(0, 6).map(event => `
+        <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+          <div>
+            <strong>${event.event_name || 'event'}</strong>
+            <div class="muted">${event.page_name || '—'} · ${event.device_platform || '—'} · ${event.user_state || '—'}</div>
+          </div>
+          <span class="muted">${formatDate(event.created_at)}</span>
+        </div>
+      `).join('') : (activity.length ? activity.slice(0, 6).map(event => `
+        <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+          <div>
+            <strong>${event.event_name || 'event'}</strong>
+            <div class="muted">${event.page || '—'} · ${event.device_platform || '—'} · ${event.event_category || '—'}</div>
+          </div>
+          <span class="muted">${formatDate(event.created_at)}</span>
+        </div>
+      `).join('') : '<p class="muted">No activity events yet.</p>');
+
+      if (latest) {
+        $('neobudgetMetricCards').insertAdjacentHTML('afterbegin', `
+          <div class="card">
+            <div class="metric-label">Latest balance</div>
+            <div class="metric">${formatMoney(latest.final_balance)}</div>
+            <div class="muted">Latest saved submission for ${latest.period_label || 'the current period'}</div>
+          </div>
+        `);
+      }
+
+      const analyticsSummary = [
+        ['App opens', analytics.app_opens || 0],
+        ['Page views', analytics.page_views || 0],
+        ['Budgets saved', analytics.budgets_saved || 0],
+        ['Exports', analytics.history_exports || 0],
+        ['Logins', analytics.logins || 0],
+        ['7 day events', analytics.events_last_7_days || 0]
+      ];
+      const analyticsPulse = `
+        <div class="chip-row" style="margin-bottom:16px;">
+          ${analyticsSummary.map(([label, value]) => `
+            <div class="data-chip" style="min-width:132px;">
+              <span class="label">${label}</span>
+              <span class="value">${value}</span>
+              <span class="sub">analytics pulse</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      const barRows = Object.values(analytics).some(value => Number(value) > 0)
+        ? analyticsSummary.map(([label, value]) => `
+          <div class="chart-row">
+            <div class="chart-label">${label}</div>
+            <div class="chart-track"><div class="chart-fill" style="width:${Math.min(100, Number(value) * 20)}%"></div></div>
+            <div class="chart-value">${value}</div>
+          </div>
+        `).join('')
+        : '<p class="chart-empty">Analytics is quiet for now.</p>';
+      $('neobudgetEventChart').innerHTML = `${analyticsPulse}${barRows}`;
+    }
+
+    function renderGaripulseMetrics() {
+      const garages = state.garipulse?.garages || [];
+      const submissions = state.garipulse?.submissions || [];
+      const publicDirectory = state.garipulse?.publicDirectory || [];
+      const services = state.garipulse?.services || [];
+      const reviews = state.garipulse?.reviews || [];
+      const fuelPrices = state.garipulse?.fuelPrices || [];
+      const analytics = state.garipulse?.analytics || [];
+      const latestGarageDate = [
+        garages[0]?.created_at,
+        submissions[0]?.submitted_at,
+        publicDirectory[0]?.created_at,
+        services[0]?.created_at,
+        reviews[0]?.created_at,
+        fuelPrices[0]?.updated_on,
+        analytics[0]?.metric_date
+      ].filter(Boolean).sort().pop() || null;
+      const pendingSubmissions = submissions.filter(row => (row.status || 'pending') === 'pending').length;
+      const approvedGarages = garages.filter(garage => garage.status === 'approved' || garage.verified).length;
+      const metrics = [
+        ['Garages', garages.length, 'Active listings in the network'],
+        ['Approved', approvedGarages, 'Ready for the public directory'],
+        ['Pending', pendingSubmissions, 'Waiting for admin review'],
+        ['Services', services.length, 'Published service entries'],
+        ['Reviews', reviews.length, 'Customer reviews captured']
+      ];
+
+      $('garipulseLastSync').textContent = latestGarageDate ? `last sync ${formatDate(latestGarageDate)}` : 'last sync --';
+      $('garipulseOverviewChips').innerHTML = [
+        ['Garages', garages.length, 'live inventory'],
+        ['Approved', approvedGarages, 'public directory'],
+        ['Pending', pendingSubmissions, 'review queue'],
+        ['Verified', garages.filter(garage => garage.verified).length, 'trusted entries'],
+        ['Services', services.length, 'published'],
+        ['Reviews', reviews.length, 'customer voice'],
+        ['Public', publicDirectory.length, 'visible listings']
+      ].map(([label, value, sub]) => `
+        <div class="data-chip">
+          <span class="label">${label}</span>
+          <span class="value">${value}</span>
+          <span class="sub">${sub}</span>
+        </div>
+      `).join('');
+
+      $('garipulseMetricCards').innerHTML = metrics.slice(0, 3).map(([label, value, sub]) => `
+        <div class="card">
+          <div class="metric-label">${label}</div>
+          <div class="metric">${value}</div>
+          <div class="muted">${sub}</div>
+        </div>
+      `).join('');
+
+      if (!services.length && !reviews.length && !fuelPrices.length && !analytics.length) {
+        $('garipulseServiceStats').innerHTML = emptyState('No garage data yet', 'Service and review rows will show here once the network is back.');
+      } else {
+        $('garipulseServiceStats').innerHTML = `
+          <div style="display:grid;gap:12px;">
+            ${[
+              ['Services', services.length, 'Published service entries'],
+              ['Reviews', reviews.length, 'Customer reviews captured'],
+              ['Fuel prices', fuelPrices.length, 'Tracked fuel price stations'],
+              ['Analytics rows', analytics.length, 'Daily garage performance records']
+            ].map(([label, value, sub]) => `
+              <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+                <div>
+                  <strong>${label}</strong>
+                  <div class="muted">${sub}</div>
+                </div>
+                <strong>${value}</strong>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      if (!garages.length) {
+        $('garipulseGarages').innerHTML = emptyState('No garage data', 'This section stays empty until garages are added again.');
+      } else {
+        $('garipulseGarages').innerHTML = garages.slice(0, 4).map(garage => `
+          <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 0;">
+            <div>
+              <strong>${garage.name || 'Unnamed garage'}</strong>
+              <div class="muted">${garage.area || '—'} · ${garage.tier || '—'} · ${garage.status || 'pending'}</div>
+            </div>
+            <span class="pill ${reviewPillClass(garage.status || (garage.verified ? 'approved' : 'pending'))}">${garage.verified || garage.status === 'approved' ? 'public' : garage.status || 'pending'}</span>
+          </div>
+        `).join('');
+      }
+
+      renderGarageSubmissions();
+      renderPublicDirectory();
+    }
+
+    function renderGarageSubmissions() {
+      const submissions = state.garipulse?.submissions || [];
+      const target = $('garipulseSubmissions');
+      if (!target) return;
+
+      if (!submissions.length) {
+        target.innerHTML = emptyState('No submissions', 'New garage requests will appear here.');
+        return;
+      }
+
+      target.innerHTML = submissions.map(submission => `
+        <article class="review-item" data-review-id="${submission.id}">
+          <div class="review-item-head">
+            <div>
+              <h4>${submission.name || 'Unnamed garage'}</h4>
+              <div class="review-meta">${submission.area || '—'} · ${formatDate(submission.submitted_at)}</div>
+            </div>
+            <span class="pill ${reviewPillClass(submission.status)}">${submission.status || 'pending'}</span>
+          </div>
+          <div class="review-meta">
+            <div><strong>Phone:</strong> ${submission.phone || '—'}</div>
+            <div><strong>Address:</strong> ${submission.address || '—'}</div>
+            <div><strong>Submitted by:</strong> ${submission.app_user_id || '—'}</div>
+          </div>
+          <div class="review-meta">${submission.notes || 'No notes left with this submission.'}</div>
+          <textarea class="review-note" data-review-note="${submission.id}" placeholder="Add an admin note for this review">${submission.admin_note || ''}</textarea>
+          <div class="review-actions">
+            <button class="btn success small" data-review-action="approve" data-review-id="${submission.id}" ${submission.status !== 'pending' ? 'disabled' : ''}>Approve</button>
+            <button class="btn secondary small" data-review-action="decline" data-review-id="${submission.id}" ${submission.status !== 'pending' ? 'disabled' : ''}>Decline</button>
+          </div>
+          ${submission.reviewed_at ? `
+            <div class="review-meta">Reviewed ${formatDate(submission.reviewed_at)} by ${submission.reviewed_by || '—'}</div>
+          ` : ''}
+        </article>
+      `).join('');
+
+      target.querySelectorAll('[data-review-action]').forEach(button => {
+        button.addEventListener('click', async (event) => {
+          const id = event.currentTarget.dataset.reviewId;
+          const action = event.currentTarget.dataset.reviewAction;
+          await reviewGarageSubmission(id, action);
+        });
+      });
+    }
+
+    function renderPublicDirectory() {
+      const target = $('garipulsePublicDirectory');
+      if (!target) return;
+      const directory = state.garipulse?.publicDirectory || [];
+
+      if (!directory.length) {
+        target.innerHTML = emptyState('Directory is empty', 'Approved garages will appear here.');
+        return;
+      }
+
+      target.innerHTML = directory.map(garage => `
+        <div class="directory-item">
+          <div class="directory-meta">
+            <h4>${garage.name || 'Unnamed garage'}</h4>
+            <div>${garage.area || '—'} · ${garage.tier || '—'}</div>
+            <div>${garage.address || 'No address saved'} · ${garage.phone || 'No phone saved'}</div>
+          </div>
+          <div class="directory-tags">
+            <span class="pill approved">${garage.verified || garage.status === 'approved' ? 'public' : 'pending'}</span>
+            <span class="pill">${garage.reviews_count || 0} reviews</span>
+            <span class="pill">${garage.rating || 0} rating</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function reviewGarageSubmission(submissionId, decision) {
+      const submission = (state.garipulse?.submissions || []).find(row => row.id === submissionId);
+      if (!submission) return;
+
+      const noteField = document.querySelector(`[data-review-note="${submissionId}"]`);
+      const adminNote = noteField?.value.trim() || '';
+      const reviewer = state.session?.user?.email || $('userEmail').textContent || 'admin';
+      const isApproval = decision === 'approve';
+      const status = isApproval ? 'approved' : 'declined';
+      const noteText = adminNote || (isApproval ? 'Approved and published to the public directory.' : 'Declined after review.');
+
+      showLoading(true);
+      try {
+        if (isApproval) {
+          const garagePayload = {
+            name: submission.name,
+            owner: submission.app_user_id,
+            phone: submission.phone || null,
+            email: null,
+            address: submission.address || null,
+            area: submission.area,
+            tier: 'Value',
+            verified: true,
+            rating: 0,
+            reviews_count: 0,
+            hours: null,
+            kra_pin: null,
+            mpesa_till: null,
+            diesel: false,
+            brands: [],
+            spec: submission.notes || noteText,
+            features: [],
+            status: 'approved'
+          };
+
+          const garageRes = await client.from('garipulse_garages').upsert([garagePayload], { onConflict: 'name' });
+          if (garageRes.error) throw garageRes.error;
+        }
+
+        const adminActivityRes = await client.from('admin_activity_logs').insert([{
+          module_slug: 'garipulse',
+          action: `garage_submission_${status}`,
+          entity_table: 'garipulse_garage_submissions',
+          entity_id: submissionId,
+          summary: `${status === 'approved' ? 'Approved' : 'Declined'} garage submission for ${submission.name}`,
+          metadata: {
+            submission_id: submissionId,
+            garage_name: submission.name,
+            action: status,
+            admin_note: noteText
+          },
+          actor_email: reviewer
+        }]);
+
+        if (adminActivityRes.error) throw adminActivityRes.error;
+
+        const auditLogRes = await client.from('garipulse_audit_log').insert([{
+          id: Date.now(),
+          actor_id: state.session?.user?.id || reviewer,
+          actor_role: 'admin',
+          action: `garage_submission_${status}`,
+          entity_type: 'garage_submission',
+          entity_id: submissionId,
+          summary: `${status === 'approved' ? 'Approved' : 'Declined'} garage submission for ${submission.name}`,
+          details: {
+            submission_id: submissionId,
+            garage_name: submission.name,
+            admin_note: noteText,
+            status
+          }
+        }]);
+
+        if (auditLogRes.error) throw auditLogRes.error;
+
+        const reviewRes = await client.from('garipulse_garage_submissions').update({
+          status,
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: reviewer,
+          admin_note: noteText
+        }).eq('id', submissionId);
+
+        if (reviewRes.error) throw reviewRes.error;
+        await loadData();
+      } catch (error) {
+        alert(`Failed to ${decision} garage submission: ${error.message || error}`);
+      } finally {
+        showLoading(false);
+      }
     }
 
     function renderBreakdown() {
@@ -670,24 +1397,88 @@
           client.from('codzure_site_settings').select('key,value')
         ]);
 
+        const [adminOverviewRes, adminActivityRes] = await Promise.all([
+          client.from('admin_console_overview').select('*'),
+          client.from('admin_recent_activity').select('*').order('created_at', { ascending: false }).limit(8)
+        ]);
+
+        const [budgetOverviewRes, recentSubmissionsRes, activityRes, neobudgetAnalyticsRes, payrollRes, healthRes, recentEventsRes] = await Promise.all([
+          client.from('neobudget_dashboard_summary').select('*').limit(1),
+          client.from('neobudget_recent_submissions').select('*').order('created_at', { ascending: false }).limit(5),
+          client.from('neobudget_activity_events').select('*').order('created_at', { ascending: false }).limit(8),
+          client.from('neobudget_analytics_summary').select('*').limit(1),
+          client.from('neobudget_payroll_config_overview').select('*').limit(1),
+          client.from('neobudget_submission_health_overview').select('*').limit(1),
+          client.from('neobudget_analytics_recent_events').select('*').order('created_at', { ascending: false }).limit(6)
+        ]);
+
+        const [garagesRes, submissionsRes, publicDirectoryRes, servicesRes, reviewsRes, fuelPricesRes, garipulseAnalyticsRes] = await Promise.all([
+          client.from('garipulse_garages').select('*').order('created_at', { ascending: false }),
+          client.from('garipulse_garage_submissions').select('*').order('submitted_at', { ascending: false }),
+          client.from('garipulse_public_directory').select('*').order('created_at', { ascending: false }),
+          client.from('garipulse_garage_services').select('*').order('created_at', { ascending: false }),
+          client.from('garipulse_garage_reviews').select('*').order('created_at', { ascending: false }),
+          client.from('garipulse_fuel_prices').select('*').order('updated_on', { ascending: false }),
+          client.from('garipulse_analytics_daily').select('*').order('metric_date', { ascending: false })
+        ]);
+
         if (summaryRes.error) throw summaryRes.error;
         if (leadsRes.error) throw leadsRes.error;
         if (modulesRes.error) throw modulesRes.error;
         if (breakdownRes.error) throw breakdownRes.error;
         if (settingsRes.error) throw settingsRes.error;
+        if (adminOverviewRes.error) throw adminOverviewRes.error;
+        if (adminActivityRes.error) throw adminActivityRes.error;
+        if (budgetOverviewRes.error) throw budgetOverviewRes.error;
+        if (recentSubmissionsRes.error) throw recentSubmissionsRes.error;
+        if (activityRes.error) throw activityRes.error;
+        if (neobudgetAnalyticsRes.error) throw neobudgetAnalyticsRes.error;
+        if (payrollRes.error) throw payrollRes.error;
+        if (healthRes.error) throw healthRes.error;
+        if (recentEventsRes.error) throw recentEventsRes.error;
+        if (garagesRes.error) throw garagesRes.error;
+        if (submissionsRes.error) throw submissionsRes.error;
+        if (publicDirectoryRes.error) throw publicDirectoryRes.error;
+        if (servicesRes.error) throw servicesRes.error;
+        if (reviewsRes.error) throw reviewsRes.error;
+        if (fuelPricesRes.error) throw fuelPricesRes.error;
+        if (garipulseAnalyticsRes.error) throw garipulseAnalyticsRes.error;
 
         state.summary = summaryRes.data || {};
         state.leads = leadsRes.data || [];
         state.modules = modulesRes.data || [];
+        state.adminOverview = adminOverviewRes.data || [];
+        state.adminActivity = adminActivityRes.data || [];
         state.breakdown = breakdownRes.data || [];
         state.settings = Object.fromEntries((settingsRes.data || []).map(row => [row.key, row.value]));
+        state.neobudget = {
+          overview: budgetOverviewRes.data?.[0] || {},
+          recentSubmissions: recentSubmissionsRes.data || [],
+          analyticsSummary: neobudgetAnalyticsRes.data?.[0] || {},
+          payrollOverview: payrollRes.data?.[0] || null,
+          healthOverview: healthRes.data?.[0] || null,
+          recentEvents: recentEventsRes.data || [],
+          activityEvents: activityRes.data || []
+        };
+        state.garipulse = {
+          garages: garagesRes.data || [],
+          submissions: submissionsRes.data || [],
+          publicDirectory: publicDirectoryRes.data || [],
+          services: servicesRes.data || [],
+          reviews: reviewsRes.data || [],
+          fuelPrices: fuelPricesRes.data || [],
+          analytics: garipulseAnalyticsRes.data || []
+        };
 
         renderMetrics('metricCards', state.summary);
         renderMetrics('websiteMetricCards', state.summary);
         renderModules();
+        renderAdminActivity();
+        renderNeobudgetMetrics();
         renderBreakdown();
         renderLeadActionsChart('dashboardLeadActionsChart');
         renderLeadActionsChart('websiteLeadActionsChart');
+        renderGaripulseMetrics();
         renderLeads();
         renderSettings();
       } catch (error) {
@@ -769,8 +1560,12 @@
       state.summary = null;
       state.leads = [];
       state.modules = [];
+      state.adminOverview = [];
+      state.adminActivity = [];
       state.breakdown = [];
       state.settings = {};
+      state.neobudget = null;
+      state.garipulse = null;
 
       $('app').style.display = 'none';
       $('authScreen').style.display = 'flex';
@@ -806,6 +1601,7 @@
     }
 
     document.querySelectorAll('[data-panel]').forEach(button => button.addEventListener('click', () => setPanel(button.dataset.panel)));
+    document.querySelectorAll('[data-panel-link]').forEach(button => button.addEventListener('click', () => setPanel(button.dataset.panelLink)));
     $('loginForm').addEventListener('submit', handleLogin);
     $('settingsForm').addEventListener('submit', saveSettings);
     $('logoutBtn').addEventListener('click', handleLogout);
