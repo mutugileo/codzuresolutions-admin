@@ -126,16 +126,6 @@ export default async function SettingsPage() {
                 </Badge>
               </div>
               <Separator />
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">Subscriptions</span>
-                </div>
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/subscriptions">Open</Link>
-                </Button>
-              </div>
-              <Separator />
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">User ID</span>
                 <span className="text-xs font-mono text-muted-foreground">
@@ -166,6 +156,25 @@ export default async function SettingsPage() {
           </CardHeader>
           <CardContent>
             <ThemeSelector />
+          </CardContent>
+        </Card>
+
+        {/* Subscriptions */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-muted-foreground" />
+              <CardTitle className="text-base">Subscriptions</CardTitle>
+            </div>
+            <CardDescription>Jump straight to plan and billing controls</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Review active plans, trialing accounts, locked subscriptions, and billing actions.
+            </p>
+            <Button asChild className="w-full sm:w-auto">
+              <Link href="/subscriptions">Open subscriptions</Link>
+            </Button>
           </CardContent>
         </Card>
 
