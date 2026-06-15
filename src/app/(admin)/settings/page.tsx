@@ -3,7 +3,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { createAdminClient, createServerSupabaseClient } from "@/lib/supabase/server";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, Clock, Database, Shield, User, UserPlus, XCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock,
+  CreditCard,
+  Database,
+  Shield,
+  User,
+  UserPlus,
+  XCircle,
+} from "lucide-react";
+import Link from "next/link";
 import { ThemeSelector } from "@/components/settings/theme-selector";
 import { formatDateTime } from "@/lib/formatters";
 import {
@@ -114,6 +124,16 @@ export default async function SettingsPage() {
                 <Badge variant="secondary" className="capitalize">
                   {adminInfo?.role?.replace("_", " ") || "Admin"}
                 </Badge>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">Subscriptions</span>
+                </div>
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/subscriptions">Open</Link>
+                </Button>
               </div>
               <Separator />
               <div className="flex items-center justify-between">
