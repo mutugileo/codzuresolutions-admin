@@ -1,6 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSyncExternalStore } from "react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   AreaChart,
   Area,
@@ -17,6 +18,12 @@ interface RevenueTrendChartProps {
 }
 
 export function RevenueTrendChart({ data }: RevenueTrendChartProps) {
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
     return d.toLocaleDateString("en-KE", { month: "short", day: "numeric" });
@@ -31,56 +38,60 @@ export function RevenueTrendChart({ data }: RevenueTrendChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Revenue Trend (30 Days)</CardTitle>
+        <span className="section-header">Revenue Trend (30 Days)</span>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
-              <defs>
-                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-              <XAxis
-                dataKey="date"
-                tickFormatter={formatDate}
-                className="text-xs"
-                tick={{ fill: "hsl(var(--muted-foreground))" }}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis
-                tickFormatter={formatKES}
-                className="text-xs"
-                tick={{ fill: "hsl(var(--muted-foreground))" }}
-                tickLine={false}
-                axisLine={false}
-                width={50}
-              />
-              <Tooltip
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                formatter={(value: any) => [`KES ${Number(value).toLocaleString()}`, "Revenue"]}
-                labelFormatter={(label: unknown) => formatDate(String(label))}
-                contentStyle={{
-                  backgroundColor: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
-                  borderRadius: "8px",
-                  color: "hsl(var(--card-foreground))",
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="revenue"
-                stroke="hsl(var(--chart-1))"
-                fillOpacity={1}
-                fill="url(#colorRevenue)"
-                strokeWidth={2}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          {!isMounted ? (
+            <div className="h-full rounded-md bg-white/5" />
+          ) : (
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
+              <AreaChart data={data}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#C8FF00" stopOpacity={0.2} />
+                    <stop offset="95%" stopColor="#C8FF00" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke="rgba(255,255,255,0.05)" strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={formatDate}
+                  className="text-xs"
+                  tick={{ fill: "#888888" }}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  tickFormatter={formatKES}
+                  className="text-xs"
+                  tick={{ fill: "#888888" }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={50}
+                />
+                <Tooltip
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  formatter={(value: any) => [`KES ${Number(value).toLocaleString()}`, "Revenue"]}
+                  labelFormatter={(label: unknown) => formatDate(String(label))}
+                  contentStyle={{
+                    backgroundColor: "#1A1C1E",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: "12px",
+                    color: "#FFFFFF",
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#C8FF00"
+                  fillOpacity={1}
+                  fill="url(#colorRevenue)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
         </div>
       </CardContent>
     </Card>

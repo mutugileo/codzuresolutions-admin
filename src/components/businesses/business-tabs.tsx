@@ -20,7 +20,7 @@ export function BusinessTabs({ businessId }: { businessId: string }) {
   const basePath = `/businesses/${businessId}`;
 
   return (
-    <div className="border-b border-border overflow-x-auto">
+    <div className="border-b border-[rgba(255,255,255,0.08)] overflow-x-auto">
       <nav className="flex gap-0 -mb-px min-w-max">
         {tabs.map((tab) => {
           const fullHref = `${basePath}${tab.href}`;
@@ -35,8 +35,8 @@ export function BusinessTabs({ businessId }: { businessId: string }) {
               className={cn(
                 "px-4 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
                 isActive
-                  ? "border-primary text-foreground"
-                  : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/30"
+                  ? "border-[#C8FF00] text-white"
+                  : "border-transparent text-[#888] hover:text-white hover:border-white/20"
               )}
             >
               {tab.label}

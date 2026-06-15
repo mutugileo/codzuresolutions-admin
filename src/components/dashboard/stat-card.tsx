@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { type LucideIcon } from "lucide-react";
 
 interface StatCardProps {
@@ -12,15 +12,13 @@ export function StatCard({ title, value, description, icon: Icon }: StatCardProp
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <span className="label-text">{title}</span>
+        <Icon className="h-4 w-4 text-[#C8FF00] stroke-[1.5]" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+        <div className="text-3xl font-extrabold tracking-tight text-white">{value}</div>
         {description && (
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
+          <p className="text-xs text-[#888] mt-1">{description}</p>
         )}
       </CardContent>
     </Card>

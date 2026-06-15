@@ -1,19 +1,44 @@
 import { getSession } from "@/actions/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { createAdminClient } from "@/lib/supabase/server";
+import { createAdminClient, createServerSupabaseClient } from "@/lib/supabase/server";
 import { Separator } from "@/components/ui/separator";
-import { Shield, User, Clock, Database } from "lucide-react";
+import { CheckCircle2, Clock, Database, Shield, User, UserPlus, XCircle } from "lucide-react";
 import { ThemeSelector } from "@/components/settings/theme-selector";
 import { formatDateTime } from "@/lib/formatters";
+import {
+  approveRegistrationRequestAction,
+  rejectRegistrationRequestAction,
+} from "@/actions/admin-registrations";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+
+interface AdminRegistrationRequest {
+  id: string;
+  email: string;
+  full_name: string;
+  phone: string | null;
+  organization_name: string | null;
+  reason: string | null;
+  requested_role: "admin" | "analyst";
+  status: "pending" | "approved" | "rejected";
+  created_at: string;
+}
 
 async function getAdminInfo(userId: string) {
-  const supabase = createAdminClient();
+  const supabase = await createServerSupabaseClient();
   const { data } = await supabase
     .from("admins")
     .select("*")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
   return data;
 }
 
@@ -40,10 +65,25 @@ async function getSystemStats() {
   };
 }
 
+async function getRegistrationRequests(): Promise<AdminRegistrationRequest[]> {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.rpc(
+    "get_pending_admin_registration_requests"
+  );
+
+  if (error) {
+    return [];
+  }
+
+  return (data || []) as AdminRegistrationRequest[];
+}
+
 export default async function SettingsPage() {
-  const user = await getSession();
+  const isDemo = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+  const user = isDemo ? null : await getSession();
   const adminInfo = user ? await getAdminInfo(user.id) : null;
   const stats = await getSystemStats();
+  const registrationRequests = isDemo ? [] : await getRegistrationRequests();
 
   return (
     <div className="space-y-6">
@@ -157,13 +197,89 @@ export default async function SettingsPage() {
               </p>
               <p>
                 Admin access is managed through the <code className="text-xs bg-muted px-1 py-0.5 rounded">admins</code> table
-                in Supabase. To add a new admin, insert a row with their auth user ID and email.
+                in Supabase. New people register first, then an approved admin reviews the request below.
               </p>
               <p>
                 Available admin actions: extend trials, override subscription statuses,
                 view all business data and analytics.
               </p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Registration Requests */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <UserPlus className="h-5 w-5 text-muted-foreground" />
+              <CardTitle className="text-base">Registration Requests</CardTitle>
+            </div>
+            <CardDescription>Review people who have asked for dashboard access</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {registrationRequests.length === 0 ? (
+              <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
+                No pending registration requests right now.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Applicant</TableHead>
+                    <TableHead>Team</TableHead>
+                    <TableHead>Reason</TableHead>
+                    <TableHead>Requested</TableHead>
+                    <TableHead className="text-right">Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {registrationRequests.map((request) => (
+                    <TableRow key={request.id}>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <p className="font-medium">{request.full_name}</p>
+                          <p className="text-xs text-muted-foreground">{request.email}</p>
+                          {request.phone && (
+                            <p className="text-xs text-muted-foreground">{request.phone}</p>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>{request.organization_name || "—"}</TableCell>
+                      <TableCell className="max-w-xs whitespace-normal text-muted-foreground">
+                        {request.reason || "No reason provided"}
+                      </TableCell>
+                      <TableCell>{formatDateTime(request.created_at)}</TableCell>
+                      <TableCell>
+                        <div className="flex justify-end gap-2">
+                          <form action={approveRegistrationRequestAction} className="flex items-center gap-2">
+                            <input type="hidden" name="requestId" value={request.id} />
+                            <select
+                              name="role"
+                              defaultValue={request.requested_role}
+                              className="h-9 rounded-md border bg-background px-2 text-sm"
+                            >
+                              <option value="admin">Admin</option>
+                              <option value="analyst">Analyst</option>
+                            </select>
+                            <Button type="submit" size="sm" className="gap-1">
+                              <CheckCircle2 className="h-4 w-4" />
+                              Approve
+                            </Button>
+                          </form>
+                          <form action={rejectRegistrationRequestAction}>
+                            <input type="hidden" name="requestId" value={request.id} />
+                            <Button type="submit" size="sm" variant="outline" className="gap-1">
+                              <XCircle className="h-4 w-4" />
+                              Reject
+                            </Button>
+                          </form>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </div>

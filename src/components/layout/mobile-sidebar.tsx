@@ -4,10 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
+  BarChart3,
   Building2,
   CreditCard,
-  BarChart3,
+  LayoutDashboard,
   Settings,
 } from "lucide-react";
 
@@ -23,9 +23,12 @@ export function MobileSidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full flex-col bg-sidebar">
-      <div className="flex h-14 items-center border-b border-sidebar-border px-6">
-        <span className="text-lg font-bold text-sidebar-foreground">NeoBuk Admin</span>
+    <div className="flex h-full flex-col bg-[#0D0D0D]">
+      <div className="flex h-14 items-center border-b border-[rgba(255,255,255,0.08)] px-6">
+        <Link href="/dashboard" className="flex items-center gap-2 text-lg font-bold text-white">
+          <span className="h-2 w-2 rounded-full bg-[#C8FF00]" />
+          NeoBuk
+        </Link>
       </div>
       <nav className="flex-1 space-y-1 p-4">
         {navItems.map((item) => {
@@ -36,13 +39,13 @@ export function MobileSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  ? "bg-[#C8FF00]/10 text-[#C8FF00]"
+                  : "text-[#888] hover:bg-white/5 hover:text-white"
               )}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className={cn("h-4 w-4 stroke-[1.5]", isActive ? "text-[#C8FF00]" : "text-[#888]")} />
               {item.label}
             </Link>
           );

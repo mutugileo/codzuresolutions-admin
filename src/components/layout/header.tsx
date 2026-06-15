@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { ThemeToggle } from "./theme-toggle";
 import { logoutAction } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,9 +16,7 @@ import { MobileSidebar } from "./mobile-sidebar";
 
 function getBreadcrumbs(pathname: string): string[] {
   const segments = pathname.split("/").filter(Boolean);
-  return segments.map((s) =>
-    s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, " ")
-  );
+  return segments.map((s) => s.charAt(0).toUpperCase() + s.slice(1).replace(/-/g, " "));
 }
 
 export function Header({ email }: { email?: string }) {
@@ -27,11 +24,11 @@ export function Header({ email }: { email?: string }) {
   const breadcrumbs = getBreadcrumbs(pathname);
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-border px-4 md:px-6">
+    <header className="flex h-14 items-center justify-between border-b border-border bg-[#0D0D0D] px-4 md:px-6">
       <div className="flex items-center gap-3">
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
+            <Button variant="ghost" size="icon" className="md:hidden text-[#888] hover:text-white">
               <Menu className="h-5 w-5" />
             </Button>
           </SheetTrigger>
@@ -39,11 +36,11 @@ export function Header({ email }: { email?: string }) {
             <MobileSidebar />
           </SheetContent>
         </Sheet>
-        <nav className="hidden md:flex items-center gap-1 text-sm text-muted-foreground">
+        <nav className="hidden md:flex items-center gap-1 text-sm text-[#888]">
           {breadcrumbs.map((crumb, i) => (
             <span key={i} className="flex items-center gap-1">
-              {i > 0 && <span>/</span>}
-              <span className={i === breadcrumbs.length - 1 ? "text-foreground font-medium" : ""}>
+              {i > 0 && <span className="text-[#555]">/</span>}
+              <span className={i === breadcrumbs.length - 1 ? "text-white font-medium" : ""}>
                 {crumb}
               </span>
             </span>
@@ -51,12 +48,11 @@ export function Header({ email }: { email?: string }) {
         </nav>
       </div>
       <div className="flex items-center gap-2">
-        <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarFallback className="text-xs">
+                <AvatarFallback className="bg-[#C8FF00] text-[#0D0D0D] text-xs font-bold">
                   {email?.charAt(0).toUpperCase() || "A"}
                 </AvatarFallback>
               </Avatar>
@@ -64,7 +60,7 @@ export function Header({ email }: { email?: string }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {email && (
-              <DropdownMenuItem disabled className="text-xs text-muted-foreground">
+              <DropdownMenuItem disabled className="text-xs text-[#888]">
                 {email}
               </DropdownMenuItem>
             )}

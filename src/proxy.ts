@@ -1,7 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
+  // Demo mode: skip auth entirely
+  if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
+    return NextResponse.next();
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -29,15 +34,20 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const publicPaths = ["/login", "/register", "/registration-pending"];
+  const isPublicPage =
+    publicPaths.includes(request.nextUrl.pathname) ||
+    request.nextUrl.pathname.startsWith("/auth/");
   const isLoginPage = request.nextUrl.pathname === "/login";
+  const isRegisterPage = request.nextUrl.pathname === "/register";
 
-  if (!user && !isLoginPage) {
+  if (!user && !isPublicPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  if (user && isLoginPage) {
+  if (user && (isLoginPage || isRegisterPage)) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);

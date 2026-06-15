@@ -1,21 +1,26 @@
 import { Suspense } from "react";
 import { getRevenueTrend, getPlatformOverview } from "@/actions/analytics";
-import { getPaymentMethodStats, getTopProducts } from "@/actions/analytics-extended";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  getGrowthReliabilityMetrics,
+  getPaymentMethodStats,
+  getTopProducts,
+} from "@/actions/analytics-extended";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { RevenueTrendChart } from "@/components/dashboard/revenue-chart";
 import { PaymentMethodChart } from "@/components/analytics/payment-method-chart";
 import { TopProductsChart } from "@/components/analytics/top-products-chart";
+import { GrowthReliabilitySection } from "@/components/analytics/growth-reliability-section";
 import { formatKES, formatNumber, formatPercent } from "@/lib/formatters";
 import { ShoppingCart, TrendingUp, Users, Target } from "lucide-react";
 
 async function AnalyticsContent() {
-  const [overview, revenueTrend, paymentMethods, topProducts] = await Promise.all([
+  const [overview, revenueTrend, paymentMethods, topProducts, growthReliability] = await Promise.all([
     getPlatformOverview(),
     getRevenueTrend(30),
     getPaymentMethodStats(),
     getTopProducts(10),
+    getGrowthReliabilityMetrics(),
   ]);
 
   return (
@@ -35,6 +40,8 @@ async function AnalyticsContent() {
       <div className="mt-6">
         <TopProductsChart data={topProducts} />
       </div>
+
+      <GrowthReliabilitySection data={growthReliability} />
     </>
   );
 }

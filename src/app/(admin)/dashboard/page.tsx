@@ -81,8 +81,8 @@ function DashboardSkeleton() {
 export default function DashboardPage() {
   return (
     <div className="space-y-2">
-      <h1 className="text-2xl font-bold">Platform Overview</h1>
-      <p className="text-muted-foreground">Monitor health, growth, and reliability across all NeoBuk businesses.</p>
+      <h1 className="section-header text-sm">Platform Overview</h1>
+      <p className="text-[#888] text-sm">Monitor health, growth, and reliability across all NeoBuk businesses.</p>
       <div className="pt-4">
         <Suspense fallback={<DashboardSkeleton />}>
           <DashboardContent />

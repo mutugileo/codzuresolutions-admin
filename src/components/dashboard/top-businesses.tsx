@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -21,7 +21,7 @@ export function TopBusinesses({ businesses }: TopBusinessesProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Top Businesses by Sales</CardTitle>
+        <span className="section-header">Top Businesses by Sales</span>
       </CardHeader>
       <CardContent>
         {businesses.length > 0 ? (
@@ -40,11 +40,11 @@ export function TopBusinesses({ businesses }: TopBusinessesProps) {
             <TableBody>
               {businesses.map((biz, index) => (
                 <TableRow key={biz.id}>
-                  <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                  <TableCell className="text-[#888]">{index + 1}</TableCell>
                   <TableCell>
                     <Link
                       href={`/businesses/${biz.id}`}
-                      className="font-medium hover:underline"
+                      className="font-medium text-white hover:text-[#C8FF00] transition-colors"
                     >
                       {biz.business_name}
                     </Link>
@@ -57,13 +57,13 @@ export function TopBusinesses({ businesses }: TopBusinessesProps) {
                       {biz.category}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className="text-[#888]">
                     {biz.owner_name}
                   </TableCell>
-                  <TableCell className="text-right font-medium">
+                  <TableCell className="text-right font-medium text-white">
                     {formatKES(biz.total_sales)}
                   </TableCell>
-                  <TableCell className="text-right text-muted-foreground">
+                  <TableCell className="text-right text-[#888]">
                     {formatNumber(biz.sales_count)}
                   </TableCell>
                   <TableCell>
@@ -79,7 +79,7 @@ export function TopBusinesses({ businesses }: TopBusinessesProps) {
             </TableBody>
           </Table>
         ) : (
-          <div className="flex h-32 items-center justify-center text-muted-foreground">
+          <div className="flex h-32 items-center justify-center text-[#888]">
             No business data yet
           </div>
         )}

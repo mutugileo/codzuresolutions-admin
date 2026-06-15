@@ -5,23 +5,23 @@ export const SUBSCRIPTION_PLANS = {
 } as const;
 
 export const SUBSCRIPTION_STATUS_COLORS: Record<string, string> = {
-  TRIALING: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-  ACTIVE: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  PAST_DUE: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
-  GRACE_PERIOD: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400",
-  LOCKED: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
-  CANCELED: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
+  TRIALING: "bg-[#C8FF00]/10 text-[#C8FF00] border-[#C8FF00]/20",
+  ACTIVE: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  PAST_DUE: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  GRACE_PERIOD: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+  LOCKED: "bg-red-500/10 text-red-400 border-red-500/20",
+  CANCELED: "bg-white/5 text-[#666] border-white/10",
 } as const;
 
 export const BUSINESS_CATEGORY_COLORS: Record<string, string> = {
-  PRODUCTS: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
-  SERVICES: "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-400",
+  PRODUCTS: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+  SERVICES: "bg-teal-500/10 text-teal-400 border-teal-500/20",
 } as const;
 
 export const PAYMENT_METHOD_COLORS: Record<string, string> = {
-  Cash: "hsl(var(--chart-1))",
-  "M-PESA": "hsl(var(--chart-2))",
-  Card: "hsl(var(--chart-3))",
-  Credit: "hsl(var(--chart-4))",
-  "Bank Transfer": "hsl(var(--chart-5))",
+  Cash: "var(--chart-1)",
+  "M-PESA": "var(--chart-2)",
+  Card: "var(--chart-3)",
+  Credit: "var(--chart-4)",
+  "Bank Transfer": "var(--chart-5)",
 } as const;
