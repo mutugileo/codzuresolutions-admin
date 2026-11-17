@@ -1,8 +1,28 @@
+export const KES_PER_USD = 129.96;
+
 export const SUBSCRIPTION_PLANS = {
-  FREE_TRIAL: { name: "Free Trial", price: 0, duration: "30 days" },
-  MONTHLY: { name: "Monthly", price: 249, duration: "1 month" },
-  YEARLY: { name: "Yearly", price: 2490, duration: "1 year" },
+  FREE_TRIAL: { name: "Free Trial", price: 0, monthlyEquivalentKes: 0, duration: "30 days" },
+  MONTHLY: { name: "Standard Monthly", price: 249, monthlyEquivalentKes: 249, duration: "1 month" },
+  YEARLY: { name: "Standard Yearly", price: 2490, monthlyEquivalentKes: 2490 / 12, duration: "1 year" },
+  PRO_MONTHLY: { name: "Pro Monthly", price: 999, monthlyEquivalentKes: 999, duration: "1 month" },
+  PRO_YEARLY: { name: "Pro Yearly", price: 9990, monthlyEquivalentKes: 9990 / 12, duration: "1 year" },
+  PRO_PLUS_MONTHLY: { name: "Pro+ Monthly", price: 1500, monthlyEquivalentKes: 1500, duration: "1 month" },
+  PRO_PLUS_YEARLY: { name: "Pro+ Yearly", price: 15000, monthlyEquivalentKes: 15000 / 12, duration: "1 year" },
 } as const;
+
+export const ETIMS_TAX_TYPES: Record<string, { label: string; color: string }> = {
+  A: { label: "A · Exempt", color: "bg-slate-500/10 text-slate-300 border-slate-500/20" },
+  B: { label: "B · 16% VAT", color: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
+  C: { label: "C · 0% Zero", color: "bg-sky-500/10 text-sky-400 border-sky-500/20" },
+  D: { label: "D · Non-VAT", color: "bg-white/5 text-muted-foreground border-white/10" },
+  E: { label: "E · 8% VAT", color: "bg-amber-500/10 text-amber-400 border-amber-500/20" },
+};
+
+export const ETIMS_STATUS_COLORS: Record<string, string> = {
+  submitted: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+  pending: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+  failed: "bg-red-500/10 text-red-400 border-red-500/20",
+};
 
 export const SUBSCRIPTION_STATUS_COLORS: Record<string, string> = {
   TRIALING: "bg-[#C8FF00]/10 text-[#C8FF00] border-[#C8FF00]/20",

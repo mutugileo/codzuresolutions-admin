@@ -2,6 +2,7 @@ import { getBusinessProducts } from "@/actions/businesses";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { ETIMS_TAX_TYPES } from "@/lib/constants";
 import { formatKES, formatNumber } from "@/lib/formatters";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Package } from "lucide-react";
@@ -28,6 +29,7 @@ export default async function BusinessProductsPage({ params }: { params: Promise
                     <TableHead>SKU</TableHead>
                     <TableHead className="text-right">Cost</TableHead>
                     <TableHead className="text-right">Selling</TableHead>
+                    <TableHead>Tax Type</TableHead>
                     <TableHead className="text-right">Stock</TableHead>
                     <TableHead>Status</TableHead>
                   </TableRow>
@@ -35,12 +37,19 @@ export default async function BusinessProductsPage({ params }: { params: Promise
                 <TableBody>
                   {products.map((product) => {
                     const lowStock = product.track_inventory && product.quantity <= product.low_stock_threshold;
+                    const taxCode = product.tax_type || "D";
+                    const taxMeta = ETIMS_TAX_TYPES[taxCode] || ETIMS_TAX_TYPES.D;
                     return (
                       <TableRow key={product.id}>
                         <TableCell className="font-medium">{product.name}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">{product.sku || "-"}</TableCell>
                         <TableCell className="text-right text-sm">{formatKES(product.cost_price)}</TableCell>
                         <TableCell className="text-right text-sm font-medium">{formatKES(product.selling_price)}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className={taxMeta.color}>
+                            {taxMeta.label}
+                          </Badge>
+                        </TableCell>
                         <TableCell className="text-right">
                           <span className={lowStock ? "text-destructive font-medium" : ""}>
                             {formatNumber(product.quantity)}

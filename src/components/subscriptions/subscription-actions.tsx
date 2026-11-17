@@ -20,25 +20,32 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { extendTrial, overrideSubscriptionStatus } from "@/actions/subscriptions";
-import { MoreHorizontal, CalendarPlus, Shield } from "lucide-react";
+import { extendTrial, overrideSubscriptionPlan, overrideSubscriptionStatus } from "@/actions/subscriptions";
+import { SUBSCRIPTION_PLANS } from "@/lib/constants";
+import { formatKES } from "@/lib/formatters";
+import type { SubscriptionPlanType } from "@/types/database";
+import { MoreHorizontal, CalendarPlus, Shield, Layers } from "lucide-react";
 import { toast } from "sonner";
 
 interface SubscriptionActionsProps {
   subscriptionId: string;
   currentStatus: string;
+  currentPlan: SubscriptionPlanType;
   trialEnd: string | null;
 }
 
 export function SubscriptionActions({
   subscriptionId,
   currentStatus,
+  currentPlan,
   trialEnd,
 }: SubscriptionActionsProps) {
   const [showExtendDialog, setShowExtendDialog] = useState(false);
   const [showStatusDialog, setShowStatusDialog] = useState(false);
+  const [showPlanDialog, setShowPlanDialog] = useState(false);
   const [newDate, setNewDate] = useState("");
   const [newStatus, setNewStatus] = useState(currentStatus);
+  const [newPlan, setNewPlan] = useState<SubscriptionPlanType>(currentPlan);
   const [loading, setLoading] = useState(false);
 
   async function handleExtend() {
@@ -67,6 +74,19 @@ export function SubscriptionActions({
     }
   }
 
+  async function handlePlanOverride() {
+    if (newPlan === currentPlan) return;
+    setLoading(true);
+    const result = await overrideSubscriptionPlan(subscriptionId, newPlan);
+    setLoading(false);
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success(`Plan changed to ${SUBSCRIPTION_PLANS[newPlan].name}`);
+      setShowPlanDialog(false);
+    }
+  }
+
   return (
     <>
       <DropdownMenu>
@@ -85,6 +105,10 @@ export function SubscriptionActions({
           <DropdownMenuItem onClick={() => setShowStatusDialog(true)}>
             <Shield className="mr-2 h-4 w-4" />
             Override Status
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setShowPlanDialog(true)}>
+            <Layers className="mr-2 h-4 w-4" />
+            Change Plan
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -151,6 +175,43 @@ export function SubscriptionActions({
               variant={newStatus === "LOCKED" || newStatus === "CANCELED" ? "destructive" : "default"}
             >
               {loading ? "Updating..." : `Set to ${newStatus}`}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Change Plan Dialog */}
+      <Dialog open={showPlanDialog} onOpenChange={setShowPlanDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Subscription Plan</DialogTitle>
+            <DialogDescription>
+              Current plan: {SUBSCRIPTION_PLANS[currentPlan]?.name || currentPlan}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <Select value={newPlan} onValueChange={(v) => setNewPlan(v as SubscriptionPlanType)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(SUBSCRIPTION_PLANS) as SubscriptionPlanType[]).map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {SUBSCRIPTION_PLANS[key].name} ({formatKES(SUBSCRIPTION_PLANS[key].price)})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPlanDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handlePlanOverride}
+              disabled={newPlan === currentPlan || loading}
+            >
+              {loading ? "Updating..." : "Save Plan"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,7 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
-import type { BusinessWithOwner, Sale, Product, Expense, DayClosure, ServiceDefinition, ServiceProvider, Customer, MpesaTransaction } from "@/types/database";
+import type { BusinessWithOwner, Sale, Product, Expense, DayClosure, ServiceDefinition, ServiceProvider, Customer, MpesaTransaction, EtimsConnection, EtimsInvoice } from "@/types/database";
 
 export interface BusinessListParams {
   page?: number;
@@ -198,5 +198,33 @@ export async function getBusinessMpesa(businessId: string) {
     return (data || []) as MpesaTransaction[];
   } catch {
     return [] as MpesaTransaction[];
+  }
+}
+
+export async function getBusinessEtims(businessId: string) {
+  const supabase = createAdminClient();
+  try {
+    const [connRes, invoicesRes] = await Promise.all([
+      supabase
+        .from("etims_connections")
+        .select("id, business_id, kra_pin, bhf_id, device_serial, sdc_id, mrc_no, environment, is_connected, last_synced_at, created_at, updated_at")
+        .eq("business_id", businessId)
+        .maybeSingle(),
+      supabase
+        .from("etims_invoices")
+        .select("*")
+        .eq("business_id", businessId)
+        .order("created_at", { ascending: false })
+        .limit(100),
+    ]);
+    return {
+      connection: (connRes.data ?? null) as EtimsConnection | null,
+      invoices: (invoicesRes.data || []) as EtimsInvoice[],
+    };
+  } catch {
+    return {
+      connection: null as EtimsConnection | null,
+      invoices: [] as EtimsInvoice[],
+    };
   }
 }

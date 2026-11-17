@@ -13,6 +13,7 @@ const tabs = [
   { label: "Expenses", href: "/expenses" },
   { label: "Day Closures", href: "/closures" },
   { label: "M-Pesa", href: "/mpesa" },
+  { label: "KRA eTIMS", href: "/etims" },
 ];
 
 export function BusinessTabs({ businessId }: { businessId: string }) {

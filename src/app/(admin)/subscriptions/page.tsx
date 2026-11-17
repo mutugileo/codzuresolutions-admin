@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { SUBSCRIPTION_STATUS_COLORS, SUBSCRIPTION_PLANS } from "@/lib/constants";
-import { formatKES, formatDate, formatNumber } from "@/lib/formatters";
+import { formatKES, formatUSD, formatCurrencyAmount, kesToUsd, formatDate, formatNumber } from "@/lib/formatters";
 import { CreditCard, Users, Lock, TrendingUp } from "lucide-react";
 import { SubscriptionActions } from "@/components/subscriptions/subscription-actions";
 
@@ -17,11 +17,9 @@ async function SubscriptionContent() {
   const trialing = subscriptions.filter((s) => s.status === "TRIALING");
   const locked = subscriptions.filter((s) => s.status === "LOCKED");
 
-  // MRR = active monthly * 249 + active yearly * (2490/12)
   const mrr = active.reduce((sum, s) => {
-    if (s.plan_type === "MONTHLY") return sum + 249;
-    if (s.plan_type === "YEARLY") return sum + 2490 / 12;
-    return sum;
+    const plan = SUBSCRIPTION_PLANS[s.plan_type as keyof typeof SUBSCRIPTION_PLANS];
+    return sum + (plan?.monthlyEquivalentKes ?? 0);
   }, 0);
 
   return (
@@ -30,7 +28,7 @@ async function SubscriptionContent() {
         <StatCard title="Active" value={formatNumber(active.length)} icon={CreditCard} />
         <StatCard title="Trialing" value={formatNumber(trialing.length)} icon={Users} />
         <StatCard title="Locked" value={formatNumber(locked.length)} icon={Lock} />
-        <StatCard title="MRR" value={formatKES(mrr)} icon={TrendingUp} />
+        <StatCard title="MRR" value={formatKES(mrr)} description={`${formatUSD(kesToUsd(mrr))} / mo`} icon={TrendingUp} />
       </div>
 
       <Card className="mt-6">
@@ -76,7 +74,7 @@ async function SubscriptionContent() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-sm">
-                        {formatKES(sub.price)}
+                        {formatCurrencyAmount(sub.price, sub.currency)}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {formatDate(sub.current_period_end)}
@@ -85,6 +83,7 @@ async function SubscriptionContent() {
                         <SubscriptionActions
                           subscriptionId={sub.id}
                           currentStatus={sub.status}
+                          currentPlan={sub.plan_type}
                           trialEnd={sub.trial_end}
                         />
                       </TableCell>

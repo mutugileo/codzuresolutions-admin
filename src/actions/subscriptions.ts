@@ -1,6 +1,8 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { SUBSCRIPTION_PLANS } from "@/lib/constants";
+import type { SubscriptionPlanType } from "@/types/database";
 import { revalidatePath } from "next/cache";
 
 export async function getSubscriptionsWithBusinesses() {
@@ -45,6 +47,34 @@ export async function overrideSubscriptionStatus(
     .from("subscriptions")
     .update({
       status: newStatus,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", subscriptionId);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/subscriptions");
+  revalidatePath("/businesses");
+  return { success: true };
+}
+
+export async function overrideSubscriptionPlan(
+  subscriptionId: string,
+  newPlanType: SubscriptionPlanType
+) {
+  const plan = SUBSCRIPTION_PLANS[newPlanType];
+  if (!plan) {
+    return { error: "Invalid plan type" };
+  }
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("subscriptions")
+    .update({
+      plan_type: newPlanType,
+      price: plan.price,
+      currency: "KES",
       updated_at: new Date().toISOString(),
     })
     .eq("id", subscriptionId);

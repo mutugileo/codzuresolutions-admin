@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { KES_PER_USD } from "@/lib/constants";
 import type { PlatformOverview } from "@/types/database";
 
 export async function getPlatformOverview(): Promise<PlatformOverview> {
@@ -33,7 +34,7 @@ export async function getPlatformOverview(): Promise<PlatformOverview> {
       .in("payment_status", ["PAID", "PARTIAL"]),
     supabase
       .from("payments")
-      .select("amount")
+      .select("amount, currency")
       .eq("status", "SUCCESS"),
     supabase
       .from("businesses")
@@ -71,10 +72,11 @@ export async function getPlatformOverview(): Promise<PlatformOverview> {
     0
   );
 
-  const subscriptionRevenue = (paymentsRes.data || []).reduce(
-    (sum, p) => sum + (Number(p.amount) || 0),
-    0
-  );
+  const subscriptionRevenue = (paymentsRes.data || []).reduce((sum, p) => {
+    const raw = Number(p.amount) || 0;
+    const isUsd = String((p as { currency?: string | null }).currency ?? "").toUpperCase() === "USD";
+    return sum + (isUsd ? raw * KES_PER_USD : raw);
+  }, 0);
 
   // DAU: count unique business_ids
   const dauBusinessIds = new Set((dauRes.data || []).map((s) => s.business_id));

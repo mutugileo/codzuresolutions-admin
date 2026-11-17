@@ -23,10 +23,19 @@ export interface BusinessWithOwner extends Business {
   subscriptions: Subscription[];
 }
 
+export type SubscriptionPlanType =
+  | "FREE_TRIAL"
+  | "MONTHLY"
+  | "YEARLY"
+  | "PRO_MONTHLY"
+  | "PRO_YEARLY"
+  | "PRO_PLUS_MONTHLY"
+  | "PRO_PLUS_YEARLY";
+
 export interface Subscription {
   id: string;
   business_id: string;
-  plan_type: "FREE_TRIAL" | "MONTHLY" | "YEARLY";
+  plan_type: SubscriptionPlanType;
   price: number;
   currency: string;
   status: SubscriptionStatus;
@@ -120,6 +129,43 @@ export interface Product {
   track_inventory: boolean;
   is_active: boolean;
   image_url: string | null;
+  tax_type?: "A" | "B" | "C" | "D" | "E";
+  etims_item_code?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EtimsConnection {
+  id: string;
+  business_id: string;
+  kra_pin: string;
+  bhf_id: string;
+  device_serial: string;
+  sdc_id: string | null;
+  mrc_no: string | null;
+  environment: "sandbox" | "production";
+  is_connected: boolean;
+  last_synced_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface EtimsInvoice {
+  id: string;
+  business_id: string;
+  sale_id: string;
+  invoice_number: string;
+  cu_invoice_number: string | null;
+  receipt_signature: string | null;
+  sdc_id: string | null;
+  mrc_no: string | null;
+  qr_url: string | null;
+  taxable_amount: number;
+  tax_amount: number;
+  total_amount: number;
+  status: "pending" | "submitted" | "failed";
+  error_message: string | null;
+  submitted_at: string | null;
   created_at: string;
   updated_at: string;
 }
