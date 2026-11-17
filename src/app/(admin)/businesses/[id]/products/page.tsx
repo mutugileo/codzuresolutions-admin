@@ -26,23 +26,23 @@ export default async function BusinessProductsPage({ params }: { params: Promise
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-                    <TableHead>SKU</TableHead>
+                    <TableHead>Barcode</TableHead>
                     <TableHead className="text-right">Cost</TableHead>
                     <TableHead className="text-right">Selling</TableHead>
                     <TableHead>Tax Type</TableHead>
                     <TableHead className="text-right">Stock</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Category</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {products.map((product) => {
-                    const lowStock = product.track_inventory && product.quantity <= product.low_stock_threshold;
+                    const lowStock = product.quantity <= product.low_stock_threshold;
                     const taxCode = product.tax_type || "D";
                     const taxMeta = ETIMS_TAX_TYPES[taxCode] || ETIMS_TAX_TYPES.D;
                     return (
                       <TableRow key={product.id}>
                         <TableCell className="font-medium">{product.name}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{product.sku || "-"}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{product.barcode || "-"}</TableCell>
                         <TableCell className="text-right text-sm">{formatKES(product.cost_price)}</TableCell>
                         <TableCell className="text-right text-sm font-medium">{formatKES(product.selling_price)}</TableCell>
                         <TableCell>
@@ -57,8 +57,8 @@ export default async function BusinessProductsPage({ params }: { params: Promise
                           {lowStock && <span className="text-xs text-destructive ml-1">LOW</span>}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={product.is_active ? "default" : "secondary"}>
-                            {product.is_active ? "Active" : "Inactive"}
+                          <Badge variant="secondary">
+                            {product.category || "General"}
                           </Badge>
                         </TableCell>
                       </TableRow>

@@ -61,12 +61,13 @@ export interface SubscriptionWithBusiness extends Subscription {
 
 export interface Payment {
   id: string;
-  subscription_id: string;
-  provider: "MPESA" | "PAYSTACK" | "CHAPA";
-  amount: number;
+  business_id: string;
+  user_id: string | null;
+  plan_code: string;
+  amount_kes: number;
   currency: string;
   reference: string | null;
-  phone_number: string | null;
+  phone: string | null;
   status: "PENDING" | "SUCCESS" | "FAILED";
   paid_at: string | null;
   created_at: string;
@@ -76,20 +77,13 @@ export interface Sale {
   id: string;
   business_id: string;
   sale_number: string | null;
-  sale_type: string;
   subtotal: number;
-  discount_amount: number;
-  tax_amount: number;
   total_amount: number;
   payment_method: string;
   payment_reference: string | null;
-  payment_status: string;
-  amount_paid: number | null;
-  change_given: number;
   customer_name: string | null;
-  customer_phone: string | null;
-  recorded_by: string | null;
-  sale_date: string;
+  customer_id: string | null;
+  channel: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -117,17 +111,13 @@ export interface Product {
   id: string;
   business_id: string;
   name: string;
-  description: string | null;
-  sku: string | null;
   barcode: string | null;
-  category_id: string | null;
+  category: string | null;
+  unit: string | null;
   cost_price: number;
   selling_price: number;
-  wholesale_price: number | null;
   quantity: number;
   low_stock_threshold: number;
-  track_inventory: boolean;
-  is_active: boolean;
   image_url: string | null;
   tax_type?: "A" | "B" | "C" | "D" | "E";
   etims_item_code?: string | null;
@@ -218,14 +208,19 @@ export interface ServiceProvider {
 export interface DayClosure {
   id: string;
   business_id: string;
-  closure_date: string;
-  total_sales_amount: number;
-  total_sales_count: number;
-  total_expenses_amount: number;
-  total_expenses_count: number;
-  cash_in_hand_expected: number;
-  cash_in_hand_actual: number;
-  discrepancy: number;
+  closed_date: string | null;
+  closure_date: string | null;
+  expected_cash: number;
+  actual_cash: number;
+  variance: number;
+  variance_reason: string | null;
+  total_sales: number;
+  cash_sales: number;
+  mpesa_sales: number;
+  credit_sales: number;
+  total_expenses: number;
+  net_profit: number;
+  closed_by: string | null;
   notes: string | null;
   created_at: string;
   updated_at: string;

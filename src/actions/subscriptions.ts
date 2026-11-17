@@ -88,12 +88,12 @@ export async function overrideSubscriptionPlan(
   return { success: true };
 }
 
-export async function getPaymentsBySubscription(subscriptionId: string) {
+export async function getPaymentsByBusiness(businessId: string) {
   const supabase = createAdminClient();
   const { data } = await supabase
-    .from("payments")
+    .from("subscription_charges")
     .select("*")
-    .eq("subscription_id", subscriptionId)
+    .eq("business_id", businessId)
     .order("created_at", { ascending: false });
   return data || [];
 }

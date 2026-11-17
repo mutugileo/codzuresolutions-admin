@@ -33,21 +33,25 @@ export default async function BusinessClosuresPage({ params }: { params: Promise
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {closures.map((closure) => (
+                  {closures.map((closure) => {
+                    const dateVal = closure.closed_date || closure.closure_date || closure.created_at;
+                    const variance = Number(closure.variance) || 0;
+                    return (
                     <TableRow key={closure.id}>
-                      <TableCell className="font-medium">{formatDate(closure.closure_date)}</TableCell>
-                      <TableCell className="text-right text-sm">{formatKES(closure.total_sales_amount)}</TableCell>
-                      <TableCell className="text-right text-sm">{formatKES(closure.total_expenses_amount)}</TableCell>
-                      <TableCell className="text-right text-sm">{formatKES(closure.cash_in_hand_expected)}</TableCell>
-                      <TableCell className="text-right text-sm">{formatKES(closure.cash_in_hand_actual)}</TableCell>
+                      <TableCell className="font-medium">{formatDate(dateVal)}</TableCell>
+                      <TableCell className="text-right text-sm">{formatKES(closure.total_sales || 0)}</TableCell>
+                      <TableCell className="text-right text-sm">{formatKES(closure.total_expenses || 0)}</TableCell>
+                      <TableCell className="text-right text-sm">{formatKES(closure.expected_cash || 0)}</TableCell>
+                      <TableCell className="text-right text-sm">{formatKES(closure.actual_cash || 0)}</TableCell>
                       <TableCell className={cn(
                         "text-right font-medium",
-                        closure.discrepancy < 0 ? "text-destructive" : closure.discrepancy > 0 ? "text-green-600" : ""
+                        variance < 0 ? "text-destructive" : variance > 0 ? "text-green-600" : ""
                       )}>
-                        {closure.discrepancy > 0 ? "+" : ""}{formatKES(closure.discrepancy)}
+                        {variance > 0 ? "+" : ""}{formatKES(variance)}
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>

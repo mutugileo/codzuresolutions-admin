@@ -26,24 +26,22 @@ export default async function BusinessSalesPage({ params }: { params: Promise<{ 
                   <TableRow>
                     <TableHead>Sale #</TableHead>
                     <TableHead>Date</TableHead>
-                    <TableHead>Type</TableHead>
+                    <TableHead>Channel</TableHead>
                     <TableHead className="text-right">Total</TableHead>
                     <TableHead>Payment</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Customer</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {sales.map((sale) => (
                     <TableRow key={sale.id}>
                       <TableCell className="font-mono text-sm">{sale.sale_number || "-"}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{formatDateTime(sale.sale_date)}</TableCell>
-                      <TableCell><Badge variant="outline">{sale.sale_type}</Badge></TableCell>
+                      <TableCell className="text-sm text-muted-foreground">{formatDateTime(sale.created_at)}</TableCell>
+                      <TableCell><Badge variant="outline">{sale.channel || "counter"}</Badge></TableCell>
                       <TableCell className="text-right font-medium">{formatKES(sale.total_amount)}</TableCell>
                       <TableCell className="text-sm">{sale.payment_method}</TableCell>
-                      <TableCell>
-                        <Badge variant={sale.payment_status === "PAID" ? "default" : "secondary"}>
-                          {sale.payment_status}
-                        </Badge>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {sale.customer_name || "Walk-in"}
                       </TableCell>
                     </TableRow>
                   ))}

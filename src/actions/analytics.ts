@@ -1,7 +1,6 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
-import { KES_PER_USD } from "@/lib/constants";
 import type { PlatformOverview } from "@/types/database";
 
 export async function getPlatformOverview(): Promise<PlatformOverview> {
@@ -30,11 +29,10 @@ export async function getPlatformOverview(): Promise<PlatformOverview> {
     supabase.from("subscriptions").select("status"),
     supabase
       .from("sales")
-      .select("total_amount")
-      .in("payment_status", ["PAID", "PARTIAL"]),
+      .select("total_amount"),
     supabase
-      .from("payments")
-      .select("amount, currency")
+      .from("subscription_charges")
+      .select("amount_kes, currency")
       .eq("status", "SUCCESS"),
     supabase
       .from("businesses")
@@ -52,7 +50,7 @@ export async function getPlatformOverview(): Promise<PlatformOverview> {
     supabase
       .from("sales")
       .select("business_id")
-      .gte("sale_date", new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()),
+      .gte("created_at", new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()),
     // Closures today for ritual engagement
     supabase
       .from("day_closures")
@@ -73,9 +71,8 @@ export async function getPlatformOverview(): Promise<PlatformOverview> {
   );
 
   const subscriptionRevenue = (paymentsRes.data || []).reduce((sum, p) => {
-    const raw = Number(p.amount) || 0;
-    const isUsd = String((p as { currency?: string | null }).currency ?? "").toUpperCase() === "USD";
-    return sum + (isUsd ? raw * KES_PER_USD : raw);
+    const raw = Number((p as { amount_kes?: number | null }).amount_kes) || 0;
+    return sum + raw;
   }, 0);
 
   // DAU: count unique business_ids
@@ -150,10 +147,9 @@ export async function getRevenueTrend(days: number = 30): Promise<RevenueTrendIt
 
   const { data } = await supabase
     .from("sales")
-    .select("sale_date, total_amount")
-    .in("payment_status", ["PAID", "PARTIAL"])
-    .gte("sale_date", startDate.toISOString())
-    .order("sale_date", { ascending: true });
+    .select("created_at, total_amount")
+    .gte("created_at", startDate.toISOString())
+    .order("created_at", { ascending: true });
 
   // Group by date
   const dailyRevenue: Record<string, number> = {};
@@ -167,7 +163,7 @@ export async function getRevenueTrend(days: number = 30): Promise<RevenueTrendIt
   }
 
   (data || []).forEach((sale) => {
-    const date = new Date(sale.sale_date).toISOString().split("T")[0];
+    const date = new Date(sale.created_at).toISOString().split("T")[0];
     dailyRevenue[date] = (dailyRevenue[date] || 0) + (Number(sale.total_amount) || 0);
   });
 
@@ -205,8 +201,7 @@ export async function getTopBusinessesBySales(limit: number = 10): Promise<TopBu
   // Get sales totals per business
   const { data: sales } = await supabase
     .from("sales")
-    .select("business_id, total_amount")
-    .in("payment_status", ["PAID", "PARTIAL"]);
+    .select("business_id, total_amount");
 
   const salesByBusiness: Record<string, { total: number; count: number }> = {};
   (sales || []).forEach((s) => {

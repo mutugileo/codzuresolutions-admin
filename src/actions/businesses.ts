@@ -94,7 +94,7 @@ export async function getBusinessById(id: string): Promise<BusinessDetail | null
       supabase.from("service_definitions").select("*", { count: "exact", head: true }).eq("business_id", id),
       supabase.from("service_providers").select("*", { count: "exact", head: true }).eq("business_id", id),
       supabase.from("day_closures").select("*", { count: "exact", head: true }).eq("business_id", id),
-      supabase.from("sales").select("total_amount").eq("business_id", id).in("payment_status", ["PAID", "PARTIAL"]),
+      supabase.from("sales").select("total_amount").eq("business_id", id),
       supabase.from("expenses").select("amount").eq("business_id", id),
     ]);
 
@@ -125,7 +125,7 @@ export async function getBusinessSales(businessId: string, page = 0, pageSize = 
     .from("sales")
     .select("*", { count: "exact" })
     .eq("business_id", businessId)
-    .order("sale_date", { ascending: false })
+    .order("created_at", { ascending: false })
     .range(page * pageSize, (page + 1) * pageSize - 1);
   return { sales: (data || []) as Sale[], total: count || 0 };
 }
@@ -157,7 +157,7 @@ export async function getBusinessClosures(businessId: string) {
     .from("day_closures")
     .select("*")
     .eq("business_id", businessId)
-    .order("closure_date", { ascending: false });
+    .order("closed_date", { ascending: false });
   return (data || []) as DayClosure[];
 }
 

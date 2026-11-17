@@ -13,8 +13,7 @@ export async function getPaymentMethodStats(): Promise<PaymentMethodItem[]> {
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("sales")
-    .select("payment_method, total_amount")
-    .in("payment_status", ["PAID", "PARTIAL"]);
+    .select("payment_method, total_amount");
 
   const stats: Record<string, { count: number; total: number }> = {};
   (data || []).forEach((s) => {
@@ -149,10 +148,10 @@ export async function getGrowthReliabilityMetrics(): Promise<GrowthReliabilityMe
     closuresBizRes,
   ] = await Promise.all([
     supabase.from("businesses").select("id, created_at"),
-    supabase.from("sales").select("business_id, sale_date"),
+    supabase.from("sales").select("business_id, created_at"),
     supabase.from("subscriptions").select("status, created_at, updated_at"),
     supabase
-      .from("payments")
+      .from("subscription_charges")
       .select("status, created_at")
       .gte("created_at", paymentLookback.toISOString())
       .order("created_at", { ascending: true }),
@@ -170,8 +169,8 @@ export async function getGrowthReliabilityMetrics(): Promise<GrowthReliabilityMe
 
   const firstSaleByBusiness = new Map<string, Date>();
   for (const sale of sales) {
-    if (!sale.business_id || !sale.sale_date) continue;
-    const saleDate = new Date(sale.sale_date);
+    if (!sale.business_id || !sale.created_at) continue;
+    const saleDate = new Date(sale.created_at);
     const known = firstSaleByBusiness.get(sale.business_id);
     if (!known || saleDate < known) {
       firstSaleByBusiness.set(sale.business_id, saleDate);
