@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/actions/auth";
 import type { BusinessWithOwner, Sale, Product, Expense, DayClosure, ServiceDefinition, ServiceProvider, Customer, MpesaTransaction, EtimsConnection, EtimsInvoice } from "@/types/database";
 
 export interface BusinessListParams {
@@ -17,13 +18,18 @@ export interface BusinessListResult {
 }
 
 export async function getBusinesses(params: BusinessListParams = {}): Promise<BusinessListResult> {
+  await requireAdmin();
   const { page = 0, pageSize = 20, search, category, subscriptionStatus } = params;
   const supabase = createAdminClient();
+
+  const subJoin = subscriptionStatus
+    ? "subscriptions!inner(id, status, plan_type, trial_end, current_period_end)"
+    : "subscriptions(id, status, plan_type, trial_end, current_period_end)";
 
   let query = supabase
     .from("businesses")
     .select(
-      `*, users!inner(id, full_name, email, phone), subscriptions(id, status, plan_type, trial_end, current_period_end)`,
+      `*, users!inner(id, full_name, email, phone), ${subJoin}`,
       { count: "exact" }
     );
 
@@ -32,6 +38,9 @@ export async function getBusinesses(params: BusinessListParams = {}): Promise<Bu
   }
   if (category) {
     query = query.eq("category", category);
+  }
+  if (subscriptionStatus) {
+    query = query.eq("subscriptions.status", subscriptionStatus);
   }
 
   const { data, count, error } = await query
@@ -43,17 +52,10 @@ export async function getBusinesses(params: BusinessListParams = {}): Promise<Bu
     return { businesses: [], total: 0 };
   }
 
-  let businesses = (data || []) as unknown as BusinessWithOwner[];
-
-  // Client-side filter by subscription status since it's in a joined table
-  if (subscriptionStatus) {
-    businesses = businesses.filter((b) => {
-      const sub = b.subscriptions?.[0];
-      return sub?.status === subscriptionStatus;
-    });
-  }
-
-  return { businesses, total: count || 0 };
+  return {
+    businesses: (data || []) as unknown as BusinessWithOwner[],
+    total: count || 0,
+  };
 }
 
 export interface BusinessDetail {
@@ -74,6 +76,7 @@ export interface BusinessDetail {
 }
 
 export async function getBusinessById(id: string): Promise<BusinessDetail | null> {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const { data: business, error } = await supabase
@@ -120,6 +123,7 @@ export async function getBusinessById(id: string): Promise<BusinessDetail | null
 }
 
 export async function getBusinessSales(businessId: string, page = 0, pageSize = 20) {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { data, count } = await supabase
     .from("sales")
@@ -131,6 +135,7 @@ export async function getBusinessSales(businessId: string, page = 0, pageSize = 
 }
 
 export async function getBusinessProducts(businessId: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("products")
@@ -141,6 +146,7 @@ export async function getBusinessProducts(businessId: string) {
 }
 
 export async function getBusinessExpenses(businessId: string, page = 0, pageSize = 20) {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { data, count } = await supabase
     .from("expenses")
@@ -152,6 +158,7 @@ export async function getBusinessExpenses(businessId: string, page = 0, pageSize
 }
 
 export async function getBusinessClosures(businessId: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("day_closures")
@@ -162,6 +169,7 @@ export async function getBusinessClosures(businessId: string) {
 }
 
 export async function getBusinessServices(businessId: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
   const [servicesRes, providersRes] = await Promise.all([
     supabase.from("service_definitions").select("*").eq("business_id", businessId).order("name"),
@@ -174,6 +182,7 @@ export async function getBusinessServices(businessId: string) {
 }
 
 export async function getBusinessCustomers(businessId: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
   try {
     const { data } = await supabase
@@ -188,6 +197,7 @@ export async function getBusinessCustomers(businessId: string) {
 }
 
 export async function getBusinessMpesa(businessId: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
   try {
     const { data } = await supabase
@@ -202,6 +212,7 @@ export async function getBusinessMpesa(businessId: string) {
 }
 
 export async function getBusinessEtims(businessId: string) {
+  await requireAdmin();
   const supabase = createAdminClient();
   try {
     const [connRes, invoicesRes] = await Promise.all([

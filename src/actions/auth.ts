@@ -150,3 +150,14 @@ export async function getAdminSession() {
 
   return { user, admin };
 }
+
+export async function requireAdmin() {
+  if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
+    return null;
+  }
+  const session = await getAdminSession();
+  if (!session) {
+    throw new Error("Unauthorized: Admin access required");
+  }
+  return session;
+}

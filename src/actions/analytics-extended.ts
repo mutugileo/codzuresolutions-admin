@@ -1,6 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/actions/auth";
 
 export interface PaymentMethodItem {
   method: string;
@@ -10,10 +11,12 @@ export interface PaymentMethodItem {
 }
 
 export async function getPaymentMethodStats(): Promise<PaymentMethodItem[]> {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("sales")
-    .select("payment_method, total_amount");
+    .select("payment_method, total_amount")
+    .limit(50000);
 
   const stats: Record<string, { count: number; total: number }> = {};
   (data || []).forEach((s) => {
@@ -48,12 +51,14 @@ export interface TopProductItem {
 }
 
 export async function getTopProducts(limit: number = 10): Promise<TopProductItem[]> {
+  await requireAdmin();
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("sale_items")
     .select("product_name, quantity, total_price")
     .eq("item_type", "PRODUCT")
-    .not("product_name", "is", null);
+    .not("product_name", "is", null)
+    .limit(50000);
 
   const productStats: Record<string, { units: number; revenue: number }> = {};
   (data || []).forEach((item) => {
@@ -127,6 +132,7 @@ function clampRate(value: number): number {
 }
 
 export async function getGrowthReliabilityMetrics(): Promise<GrowthReliabilityMetrics> {
+  await requireAdmin();
   const supabase = createAdminClient();
   const now = new Date();
 

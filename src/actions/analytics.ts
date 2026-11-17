@@ -1,9 +1,11 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/server";
+import { requireAdmin } from "@/actions/auth";
 import type { PlatformOverview } from "@/types/database";
 
 export async function getPlatformOverview(): Promise<PlatformOverview> {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   const now = new Date();
@@ -16,9 +18,10 @@ export async function getPlatformOverview(): Promise<PlatformOverview> {
 
   const [
     businessesRes,
-    subscriptionsRes,
-    salesRes,
-    paymentsRes,
+    activeSubsRes,
+    trialingSubsRes,
+    lockedSubsRes,
+    totalsRes,
     signupsTodayRes,
     signupsWeekRes,
     signupsMonthRes,
@@ -26,14 +29,10 @@ export async function getPlatformOverview(): Promise<PlatformOverview> {
     closuresTodayRes,
   ] = await Promise.all([
     supabase.from("businesses").select("*", { count: "exact", head: true }),
-    supabase.from("subscriptions").select("status"),
-    supabase
-      .from("sales")
-      .select("total_amount"),
-    supabase
-      .from("subscription_charges")
-      .select("amount_kes, currency")
-      .eq("status", "SUCCESS"),
+    supabase.from("subscriptions").select("*", { count: "exact", head: true }).eq("status", "ACTIVE"),
+    supabase.from("subscriptions").select("*", { count: "exact", head: true }).eq("status", "TRIALING"),
+    supabase.from("subscriptions").select("*", { count: "exact", head: true }).eq("status", "LOCKED"),
+    supabase.rpc("admin_platform_totals"),
     supabase
       .from("businesses")
       .select("*", { count: "exact", head: true })
@@ -50,30 +49,27 @@ export async function getPlatformOverview(): Promise<PlatformOverview> {
     supabase
       .from("sales")
       .select("business_id")
-      .gte("created_at", new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()),
+      .gte("created_at", new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString())
+      .limit(50000),
     // Closures today for ritual engagement
     supabase
       .from("day_closures")
       .select("business_id")
-      .gte("created_at", todayStart.toISOString()),
+      .gte("created_at", todayStart.toISOString())
+      .limit(50000),
   ]);
 
   const totalBusinesses = businessesRes.count || 0;
+  const activeSubscriptions = activeSubsRes.count || 0;
+  const trialingSubscriptions = trialingSubsRes.count || 0;
+  const lockedSubscriptions = lockedSubsRes.count || 0;
 
-  const subscriptions = subscriptionsRes.data || [];
-  const activeSubscriptions = subscriptions.filter((s) => s.status === "ACTIVE").length;
-  const trialingSubscriptions = subscriptions.filter((s) => s.status === "TRIALING").length;
-  const lockedSubscriptions = subscriptions.filter((s) => s.status === "LOCKED").length;
-
-  const totalSalesVolume = (salesRes.data || []).reduce(
-    (sum, s) => sum + (Number(s.total_amount) || 0),
-    0
-  );
-
-  const subscriptionRevenue = (paymentsRes.data || []).reduce((sum, p) => {
-    const raw = Number((p as { amount_kes?: number | null }).amount_kes) || 0;
-    return sum + raw;
-  }, 0);
+  const totals = (totalsRes.data ?? {}) as {
+    total_sales_volume?: number;
+    subscription_revenue?: number;
+  };
+  const totalSalesVolume = Number(totals.total_sales_volume) || 0;
+  const subscriptionRevenue = Number(totals.subscription_revenue) || 0;
 
   // DAU: count unique business_ids
   const dauBusinessIds = new Set((dauRes.data || []).map((s) => s.business_id));
@@ -111,8 +107,9 @@ export interface SubscriptionDistItem {
 }
 
 export async function getSubscriptionDistribution(): Promise<SubscriptionDistItem[]> {
+  await requireAdmin();
   const supabase = createAdminClient();
-  const { data } = await supabase.from("subscriptions").select("status");
+  const { data } = await supabase.from("subscriptions").select("status").limit(50000);
 
   const counts: Record<string, number> = {};
   (data || []).forEach((s) => {
@@ -141,6 +138,7 @@ export interface RevenueTrendItem {
 }
 
 export async function getRevenueTrend(days: number = 30): Promise<RevenueTrendItem[]> {
+  await requireAdmin();
   const supabase = createAdminClient();
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
@@ -149,7 +147,8 @@ export async function getRevenueTrend(days: number = 30): Promise<RevenueTrendIt
     .from("sales")
     .select("created_at, total_amount")
     .gte("created_at", startDate.toISOString())
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: true })
+    .limit(50000);
 
   // Group by date
   const dailyRevenue: Record<string, number> = {};
@@ -183,6 +182,7 @@ export interface TopBusinessItem {
 }
 
 export async function getTopBusinessesBySales(limit: number = 10): Promise<TopBusinessItem[]> {
+  await requireAdmin();
   const supabase = createAdminClient();
 
   // Get all businesses with owners
@@ -194,14 +194,16 @@ export async function getTopBusinessesBySales(limit: number = 10): Promise<TopBu
       category,
       users!inner(full_name),
       subscriptions(status)
-    `);
+    `)
+    .limit(10000);
 
   if (!businesses || businesses.length === 0) return [];
 
   // Get sales totals per business
   const { data: sales } = await supabase
     .from("sales")
-    .select("business_id, total_amount");
+    .select("business_id, total_amount")
+    .limit(50000);
 
   const salesByBusiness: Record<string, { total: number; count: number }> = {};
   (sales || []).forEach((s) => {
