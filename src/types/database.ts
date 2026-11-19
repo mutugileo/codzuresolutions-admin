@@ -30,7 +30,8 @@ export type SubscriptionPlanType =
   | "PRO_MONTHLY"
   | "PRO_YEARLY"
   | "PRO_PLUS_MONTHLY"
-  | "PRO_PLUS_YEARLY";
+  | "PRO_PLUS_YEARLY"
+  | "OMNICHANNEL";
 
 export interface Subscription {
   id: string;
@@ -119,6 +120,7 @@ export interface Product {
   quantity: number;
   low_stock_threshold: number;
   image_url: string | null;
+  expiry_date?: string | null;
   tax_type?: "A" | "B" | "C" | "D" | "E";
   etims_item_code?: string | null;
   created_at: string;
@@ -158,6 +160,70 @@ export interface EtimsInvoice {
   submitted_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface MpesaMerchantConnection {
+  id: string;
+  business_id: string;
+  transaction_type: "CustomerPayBillOnline" | "CustomerBuyGoodsOnline";
+  shortcode: string;
+  till_number: string | null;
+  account_reference: string | null;
+  environment: "sandbox" | "production";
+  is_active: boolean;
+  last_verified_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CheckoutStkRequest {
+  id: string;
+  business_id: string;
+  initiated_by: string | null;
+  sale_id: string | null;
+  checkout_request_id: string | null;
+  phone: string;
+  amount_kes: number;
+  account_reference: string;
+  status: "PENDING" | "SUCCESS" | "FAILED" | "CANCELLED";
+  result_code: string | null;
+  result_desc: string | null;
+  mpesa_receipt_number: string | null;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export interface ShopifyConnection {
+  id: string;
+  business_id: string;
+  shop_domain: string;
+  status: string;
+  sync_products: boolean;
+  sync_orders: boolean;
+  last_synced_at: string | null;
+  created_at: string;
+}
+
+export interface BusinessMember {
+  id: string;
+  business_id: string;
+  user_id: string | null;
+  invited_email: string;
+  display_name: string | null;
+  role: "manager" | "cashier";
+  status: "invited" | "active" | "revoked";
+  created_at: string;
+}
+
+export interface SupplierDebt {
+  id: string;
+  business_id: string;
+  supplier_name: string;
+  amount_owed: number;
+  amount_paid: number;
+  due_date: string | null;
+  status: string;
+  created_at: string;
 }
 
 export interface Expense {

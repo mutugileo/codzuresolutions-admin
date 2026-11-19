@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ETIMS_TAX_TYPES } from "@/lib/constants";
-import { formatKES, formatNumber } from "@/lib/formatters";
+import { formatKES, formatNumber, formatDate } from "@/lib/formatters";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Package } from "lucide-react";
 
@@ -30,6 +30,7 @@ export default async function BusinessProductsPage({ params }: { params: Promise
                     <TableHead className="text-right">Cost</TableHead>
                     <TableHead className="text-right">Selling</TableHead>
                     <TableHead>Tax Type</TableHead>
+                    <TableHead>Expiry</TableHead>
                     <TableHead className="text-right">Stock</TableHead>
                     <TableHead>Category</TableHead>
                   </TableRow>
@@ -39,6 +40,11 @@ export default async function BusinessProductsPage({ params }: { params: Promise
                     const lowStock = product.quantity <= product.low_stock_threshold;
                     const taxCode = product.tax_type || "D";
                     const taxMeta = ETIMS_TAX_TYPES[taxCode] || ETIMS_TAX_TYPES.D;
+                    const expiryDate = product.expiry_date ? new Date(product.expiry_date) : null;
+                    const now = new Date();
+                    const daysToExpiry = expiryDate
+                      ? Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+                      : null;
                     return (
                       <TableRow key={product.id}>
                         <TableCell className="font-medium">{product.name}</TableCell>
@@ -49,6 +55,23 @@ export default async function BusinessProductsPage({ params }: { params: Promise
                           <Badge variant="outline" className={taxMeta.color}>
                             {taxMeta.label}
                           </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm">
+                          {expiryDate ? (
+                            <div className="flex items-center gap-1.5">
+                              <span>{formatDate(product.expiry_date!)}</span>
+                              {daysToExpiry !== null && daysToExpiry <= 0 && (
+                                <Badge variant="destructive">EXPIRED</Badge>
+                              )}
+                              {daysToExpiry !== null && daysToExpiry > 0 && daysToExpiry <= 30 && (
+                                <Badge variant="outline" className="bg-amber-500/10 text-amber-400 border-amber-500/20">
+                                  {daysToExpiry}d
+                                </Badge>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-right">
                           <span className={lowStock ? "text-destructive font-medium" : ""}>

@@ -152,6 +152,11 @@ export async function getGrowthReliabilityMetrics(): Promise<GrowthReliabilityMe
     productsBizRes,
     servicesBizRes,
     closuresBizRes,
+    expiryBizRes,
+    mpesaStkBizRes,
+    shopifyBizRes,
+    etimsBizRes,
+    staffBizRes,
   ] = await Promise.all([
     supabase.from("businesses").select("id, created_at"),
     supabase.from("sales").select("business_id, created_at"),
@@ -166,6 +171,11 @@ export async function getGrowthReliabilityMetrics(): Promise<GrowthReliabilityMe
     supabase.from("products").select("business_id"),
     supabase.from("service_definitions").select("business_id"),
     supabase.from("day_closures").select("business_id"),
+    supabase.from("products").select("business_id").not("expiry_date", "is", null),
+    supabase.from("mpesa_merchant_connections").select("business_id").eq("is_active", true),
+    supabase.from("shopify_connections").select("business_id").neq("status", "disconnected"),
+    supabase.from("etims_connections").select("business_id").eq("is_connected", true),
+    supabase.from("business_members").select("business_id").eq("status", "active"),
   ]);
 
   const businesses = businessesRes.data || [];
@@ -239,8 +249,13 @@ export async function getGrowthReliabilityMetrics(): Promise<GrowthReliabilityMe
     { feature: "Sales", businesses: new Set((salesBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
     { feature: "Expenses", businesses: new Set((expensesBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
     { feature: "Inventory", businesses: new Set((productsBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
+    { feature: "Expiry Tracking", businesses: new Set((expiryBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
     { feature: "Services", businesses: new Set((servicesBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
     { feature: "Day Closure", businesses: new Set((closuresBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
+    { feature: "M-Pesa STK Push", businesses: new Set((mpesaStkBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
+    { feature: "Shopify Sync", businesses: new Set((shopifyBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
+    { feature: "KRA eTIMS", businesses: new Set((etimsBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
+    { feature: "Multi-User Staff", businesses: new Set((staffBizRes.data || []).map((r) => r.business_id).filter(Boolean)).size, rate: 0 },
   ].map((item) => ({
     ...item,
     rate: totalBusinesses > 0 ? clampRate((item.businesses / totalBusinesses) * 100) : 0,

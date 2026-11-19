@@ -14,6 +14,7 @@ const tabs = [
   { label: "Day Closures", href: "/closures" },
   { label: "M-Pesa", href: "/mpesa" },
   { label: "KRA eTIMS", href: "/etims" },
+  { label: "Team & Integrations", href: "/integrations" },
 ];
 
 export function BusinessTabs({ businessId }: { businessId: string }) {
