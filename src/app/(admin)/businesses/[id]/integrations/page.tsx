@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/shared/empty-state";
+import { KraEtimsMark, MpesaMark, ShopifyMark } from "@/components/shared/brand-marks";
 import { formatDateTime, formatKES, formatNumber } from "@/lib/formatters";
 import { Users, Receipt } from "lucide-react";
 
@@ -16,7 +17,10 @@ export default async function BusinessIntegrationsPage({ params }: { params: Pro
       <div className="grid gap-4 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">Shopify Omnichannel</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2">
+              <ShopifyMark className="h-4 w-4" />
+              Shopify Omnichannel
+            </CardTitle>
             <Badge variant={shopify && shopify.status !== "disconnected" ? "default" : "secondary"}>
               {shopify?.status || "Not Connected"}
             </Badge>
@@ -41,7 +45,10 @@ export default async function BusinessIntegrationsPage({ params }: { params: Pro
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">M-Pesa STK (Daraja)</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2">
+              <MpesaMark className="h-4 w-4" />
+              M-Pesa STK (Daraja)
+            </CardTitle>
             <Badge variant={mpesaStk?.is_active ? "default" : "secondary"}>
               {mpesaStk ? (mpesaStk.is_active ? "Active" : "Paused") : "Not Configured"}
             </Badge>
@@ -72,7 +79,10 @@ export default async function BusinessIntegrationsPage({ params }: { params: Pro
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-base">KRA eTIMS (OSCU)</CardTitle>
+            <CardTitle className="text-base flex items-center gap-2">
+              <KraEtimsMark className="h-4 w-4" />
+              KRA eTIMS (OSCU)
+            </CardTitle>
             <Badge variant={etims?.is_connected ? "default" : "secondary"}>
               {etims?.is_connected ? "Connected" : "Not Connected"}
             </Badge>
